@@ -429,6 +429,14 @@ footer {
 }
 .result-card .info-label { color: var(--accent); }
 .result-card .info-value { color: #93C5FD; font-weight: 500; line-height: 1.6; }
+/* Inline content images within project body */
+.content-image {
+  width: 100%; border-radius: 12px; border: 1px solid var(--border);
+  background: var(--surface); margin: 2rem 0;
+  display: block; object-fit: cover;
+}
+.content-image.contain { object-fit: contain; background: var(--surface-2); }
+
 .gallery-section { margin-bottom: 4rem; }
 .gallery-title { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.025em; margin-bottom: 1.25rem; color: var(--text); }
 .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
