@@ -50,7 +50,7 @@
             </div>
           </div>
         </div>
-        <div class="hero-image-wrap">
+        <div class="hero-image-wrap" style="position:relative;">
           <div class="hero-image-inner">
             <img src="images/torpedo-full.png" alt="Torpedo Kid EV — CAD model with driver">
           </div>
@@ -60,6 +60,10 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="scroll-indicator">
+      <div class="scroll-indicator-line"></div>
+      <span>scroll</span>
     </div>
   </section>
 
@@ -71,53 +75,63 @@
         <h2 class="section-title">Projects</h2>
         <p class="section-subtitle">Engineering work spanning hydrogen systems, robotics, and electric vehicles.</p>
       </div>
-      <div class="projects-grid">
+      <div class="projects-list">
 
-        <a href="h2gp.html" class="project-card reveal">
-          <div class="card-image">
-            <img src="images/h2gp-car.png" alt="H2GP Hydrogen RC Car">
+        <a href="h2gp.html" class="project-row reveal">
+          <div class="project-row-image">
+            <img src="images/forbes.png" alt="Forbes — H2GP Hydrogen RC Car coverage">
           </div>
-          <div class="card-body">
-            <div class="card-tags">
-              <span class="tag">Hydrogen Systems</span>
-              <span class="tag">Thermal Design</span>
-              <span class="tag">Forbes</span>
+          <div class="project-row-body">
+            <div class="project-row-meta">
+              <span class="project-row-num">01</span>
+              <div class="card-tags">
+                <span class="tag">Hydrogen Systems</span>
+                <span class="tag">Thermal Design</span>
+                <span class="tag">Forbes Featured</span>
+              </div>
             </div>
-            <h3 class="card-title">H2GP Hydrogen RC Car</h3>
-            <p class="card-desc">Hydrogen-powered RC race car. Competed at the H2GP World Finals in Las Vegas — placed 3rd out of 12 teams.</p>
+            <h3 class="project-row-title">H2GP Hydrogen RC Car</h3>
+            <p class="project-row-desc">Hydrogen-powered RC race car. Competed at the H2GP World Finals in Las Vegas — placed 3rd out of 12 teams. Featured in Forbes Czech Republic.</p>
             <span class="card-link">View Project →</span>
           </div>
         </a>
 
-        <a href="arm.html" class="project-card reveal">
-          <div class="card-image">
+        <a href="arm.html" class="project-row reveal">
+          <div class="project-row-image">
             <img src="images/arm-robot.png" alt="Mechanical Arm and Gripper">
           </div>
-          <div class="card-body">
-            <div class="card-tags">
-              <span class="tag">Robotics</span>
-              <span class="tag">6-DoF</span>
-              <span class="tag">SolidWorks</span>
-              <span class="tag">FEA</span>
+          <div class="project-row-body">
+            <div class="project-row-meta">
+              <span class="project-row-num">02</span>
+              <div class="card-tags">
+                <span class="tag">Robotics</span>
+                <span class="tag">6-DoF</span>
+                <span class="tag">SolidWorks</span>
+                <span class="tag">FEA</span>
+              </div>
             </div>
-            <h3 class="card-title">Mechanical Arm & Gripper</h3>
-            <p class="card-desc">Prototype robotic arm for the SIM3 project. 6-DoF concept with stepper motor integration and aluminium fabrication.</p>
+            <h3 class="project-row-title">Mechanical Arm & Gripper</h3>
+            <p class="project-row-desc">Prototype robotic arm for the SIM3 project. 6-DoF concept with stepper motor integration, FEA-validated structure, and custom aluminium fabrication.</p>
             <span class="card-link">View Project →</span>
           </div>
         </a>
 
-        <a href="torpedo.html" class="project-card reveal">
-          <div class="card-image">
+        <a href="torpedo.html" class="project-row reveal">
+          <div class="project-row-image">
             <img src="images/torpedo-full.png" alt="Torpedo Kid EV Chassis">
           </div>
-          <div class="card-body">
-            <div class="card-tags">
-              <span class="tag">Electric Vehicle</span>
-              <span class="tag">Chassis Design</span>
-              <span class="tag">FEA</span>
+          <div class="project-row-body">
+            <div class="project-row-meta">
+              <span class="project-row-num">03</span>
+              <div class="card-tags">
+                <span class="tag">Electric Vehicle</span>
+                <span class="tag">Chassis Design</span>
+                <span class="tag">FEA</span>
+                <span class="tag">Battery Packaging</span>
+              </div>
             </div>
-            <h3 class="card-title">Torpedo Kid EV Chassis</h3>
-            <p class="card-desc">Mid-frame and battery integration for a road-legal EV. €20K budget with partners EV Europe and 247TailorSteel.</p>
+            <h3 class="project-row-title">Torpedo Kid EV Chassis</h3>
+            <p class="project-row-desc">Mid-frame and battery integration for a road-legal EV. €20K budget with industry partners EV Europe and 247TailorSteel. FEA validation ongoing.</p>
             <span class="card-link">View Project →</span>
           </div>
         </a>
@@ -130,11 +144,12 @@
   <section class="about" id="about">
     <div class="container">
       <div class="about-inner">
+
         <div class="about-text reveal">
           <p class="section-label">About</p>
           <h2 class="section-title">Who I am</h2>
           <p>Czech engineering student from Prague, studying Mechatronics at Fontys University of Applied Sciences in Eindhoven. I build things that move — from hydrogen fuel cell cars to robotic arms to electric vehicle chassis.</p>
-          <p>Currently interning as an IT Analyst at CETIN using Python, SQL, and GIS for telecom infrastructure analysis. CSWP-certified SolidWorks user. Also a captain's license holder, advanced scuba diver, and four-year summer camp leader.</p>
+          <p>Currently interning as an IT Analyst at CETIN using Python, SQL, and GIS for telecom infrastructure analysis. CSWP-certified SolidWorks user, captain's license holder, and advanced scuba diver.</p>
           <div class="stats-row">
             <div>
               <div class="stat-num">3rd</div>
@@ -191,6 +206,7 @@
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </section>
@@ -227,16 +243,30 @@
   </footer>
 
   <script>
-    // Sticky nav
+    // ── Sticky nav
     const nav = document.getElementById('nav');
+    const scrollIndicator = document.querySelector('.scroll-indicator');
+
     window.addEventListener('scroll', () => {
-      nav.classList.toggle('scrolled', window.scrollY > 20);
+      const y = window.scrollY;
+      nav.classList.toggle('scrolled', y > 20);
+      document.documentElement.style.setProperty('--parallax-y', (y * 0.12) + 'px');
+      if (scrollIndicator) scrollIndicator.style.opacity = y > 100 ? '0' : '1';
+    }, { passive: true });
+
+    // ── Scroll reveal
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          revealObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.reveal').forEach(el => {
+      revealObserver.observe(el);
     });
-    // Scroll reveal
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
   </script>
 
 </body>
