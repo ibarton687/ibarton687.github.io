@@ -5,12 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ivan Bartonicek — Mechatronics Engineer</title>
   <meta name="description" content="Czech mechatronics student based in Eindhoven. Building real machines — hydrogen RC cars, robotic arms, and EV chassis. H2GP World Finals, Forbes featured.">
-  <link rel="stylesheet" href="style.css?v=7">
+  <link rel="stylesheet" href="style.css?v=8">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..900;1,14..32,300..900&display=swap" rel="stylesheet">
 </head>
 <body>
+
+  <!-- Background: fixed grid + parallax orbs -->
+  <div class="page-grid"></div>
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <div class="bg-orb bg-orb-3"></div>
 
   <nav id="nav">
     <a href="index.html" class="nav-logo">Ivan Bartonicek</a>
@@ -247,15 +253,24 @@
   </footer>
 
   <script>
-    // ── Sticky nav
+    // ── Sticky nav + parallax
     const nav = document.getElementById('nav');
     const scrollIndicator = document.querySelector('.scroll-indicator');
+    const orb1 = document.querySelector('.bg-orb-1');
+    const orb2 = document.querySelector('.bg-orb-2');
+    const orb3 = document.querySelector('.bg-orb-3');
+    const pageGrid = document.querySelector('.page-grid');
 
     window.addEventListener('scroll', () => {
       const y = window.scrollY;
       nav.classList.toggle('scrolled', y > 20);
       document.documentElement.style.setProperty('--parallax-y', (y * 0.12) + 'px');
       if (scrollIndicator) scrollIndicator.style.opacity = y > 100 ? '0' : '1';
+      // Orbs move at different speeds — creates depth
+      if (orb1) orb1.style.transform = `translateY(${y * 0.18}px)`;
+      if (orb2) orb2.style.transform = `translateY(${y * -0.1}px)`;
+      if (orb3) orb3.style.transform = `translateY(${y * 0.13}px)`;
+      if (pageGrid) pageGrid.style.transform = `translateY(${y * 0.05}px)`;
     }, { passive: true });
 
     // ── Scroll reveal (both directions)
