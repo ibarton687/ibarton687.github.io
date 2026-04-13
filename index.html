@@ -5,20 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ivan Bartonicek — Mechatronics Engineer</title>
   <meta name="description" content="Czech mechatronics student based in Eindhoven. Building real machines — hydrogen RC cars, robotic arms, and EV chassis. H2GP World Finals, Forbes featured.">
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="style.css?v=5">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..900;1,14..32,300..900&display=swap" rel="stylesheet">
 </head>
 <body>
-
-  <!-- Side section nav dots -->
-  <nav class="section-nav" aria-label="Page sections">
-    <a href="#hero"     class="snav-dot" data-label="Home"     title="Home"></a>
-    <a href="#projects" class="snav-dot" data-label="Projects" title="Projects"></a>
-    <a href="#about"    class="snav-dot" data-label="About"    title="About"></a>
-    <a href="#contact"  class="snav-dot" data-label="Contact"  title="Contact"></a>
-  </nav>
 
   <nav id="nav">
     <a href="index.html" class="nav-logo">Ivan Bartonicek</a>
@@ -275,23 +267,16 @@
 
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-    // ── Side nav dots — highlight active section
-    const snavDots = document.querySelectorAll('.snav-dot');
-    const sectionIds = ['hero', 'projects', 'about', 'contact'];
-
-    const sectionObserver = new IntersectionObserver((entries) => {
+    // ── Image fade-in on scroll
+    const imgObserver = new IntersectionObserver((entries) => {
       entries.forEach(e => {
-        if (e.isIntersecting) {
-          snavDots.forEach(d => d.classList.remove('active'));
-          const dot = document.querySelector(`.snav-dot[href="#${e.target.id}"]`);
-          if (dot) dot.classList.add('active');
-        }
+        e.target.classList.toggle('img-visible', e.isIntersecting);
       });
-    }, { threshold: 0.35 });
+    }, { threshold: 0.1 });
 
-    sectionIds.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) sectionObserver.observe(el);
+    document.querySelectorAll('.project-row-image img, .about-photo, .hero-image-inner img').forEach(img => {
+      img.classList.add('img-reveal');
+      imgObserver.observe(img);
     });
   </script>
 

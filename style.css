@@ -309,36 +309,18 @@ nav.scrolled {
 }
 .project-row:hover .card-link { gap: 0.75rem; }
 
-/* ─── Side section nav dots ───────────── */
-.section-nav {
-  position: fixed; right: 1.75rem; top: 50%;
-  transform: translateY(-50%);
-  z-index: 90;
-  display: flex; flex-direction: column; gap: 0.75rem;
-  pointer-events: all;
+/* ─── Image scroll fade-in ─────────────── */
+.img-reveal {
+  opacity: 0;
+  transform: translateY(20px) scale(0.98);
+  transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1),
+              transform 0.7s cubic-bezier(0.16,1,0.3,1);
+  will-change: opacity, transform;
 }
-.snav-dot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--text-3);
-  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-  position: relative; display: block;
+.img-reveal.img-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
-.snav-dot::after {
-  content: attr(data-label);
-  position: absolute; right: calc(100% + 10px); top: 50%;
-  transform: translateY(-50%);
-  font-size: 0.6875rem; font-weight: 600; color: var(--text-2);
-  letter-spacing: 0.06em; white-space: nowrap;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.2s ease;
-}
-.snav-dot:hover::after { opacity: 1; }
-.snav-dot.active {
-  background: var(--accent);
-  transform: scale(1.5);
-  box-shadow: 0 0 8px var(--accent-glow);
-}
-@media (max-width: 768px) { .section-nav { display: none; } }
 
 /* ─── About / Skills ──────────────────── */
 .about {
