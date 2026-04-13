@@ -295,30 +295,31 @@ nav.scrolled {
 .project-row:nth-child(even) .project-row-image { order: 2; }
 .project-row:nth-child(even) .project-row-body  { order: 1; }
 
-/* Image pane */
+/* Image pane — no border, consistent 16:9 ratio matching World Final */
 .project-row-image {
   overflow: hidden;
-  border-radius: 16px;
-  background: var(--surface-2);
-  height: 380px;
+  border-radius: 14px;
+  background: transparent;
+  aspect-ratio: 16/9;
+  height: auto;
 }
 .project-row-image img {
   width: 100%; height: 100%;
+  object-fit: cover; object-position: center center;
   transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+  display: block;
 }
 .project-row:hover .project-row-image img { transform: scale(1.04); }
 
-/* Per-image crop */
+/* Per-image crop adjustments */
 .project-row-image img[src*="torpedo-full"] {
-  object-fit: contain; object-position: center center;
+  object-fit: contain; background: var(--bg);
 }
-.project-row-image img[src*="arm-robot"],
-.project-row-image img[src*="arm-photo"] {
-  object-fit: cover; object-position: center 35%;
+.project-row-image img[src*="torpedo-fea"] {
+  object-fit: cover; object-position: center 40%; background: var(--bg);
 }
 .project-row-image img[src*="h2gp-worldfinal"] {
-  object-fit: contain; object-position: center center;
-  background: #0a0c14;
+  object-fit: contain; background: var(--bg);
 }
 
 /* Text pane */
