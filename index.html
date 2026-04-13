@@ -12,6 +12,14 @@
 </head>
 <body>
 
+  <!-- Side section nav dots -->
+  <nav class="section-nav" aria-label="Page sections">
+    <a href="#hero"     class="snav-dot" data-label="Home"     title="Home"></a>
+    <a href="#projects" class="snav-dot" data-label="Projects" title="Projects"></a>
+    <a href="#about"    class="snav-dot" data-label="About"    title="About"></a>
+    <a href="#contact"  class="snav-dot" data-label="Contact"  title="Contact"></a>
+  </nav>
+
   <nav id="nav">
     <a href="index.html" class="nav-logo">Ivan Bartonicek</a>
     <div class="nav-links">
@@ -23,7 +31,7 @@
   </nav>
 
   <!-- ─ Hero ─────────────────────────── -->
-  <section class="hero">
+  <section class="hero" id="hero">
     <div class="container">
       <div class="hero-inner">
         <div>
@@ -145,6 +153,10 @@
     <div class="container">
       <div class="about-inner">
 
+        <div class="about-photo-col reveal">
+          <img src="images/ivan.jpg" alt="Ivan Bartonicek" class="about-photo">
+        </div>
+
         <div class="about-text reveal">
           <p class="section-label">About</p>
           <h2 class="section-title">Who I am</h2>
@@ -264,8 +276,25 @@
       });
     }, { threshold: 0.08 });
 
-    document.querySelectorAll('.reveal').forEach(el => {
-      revealObserver.observe(el);
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // ── Side nav dots — highlight active section
+    const snavDots = document.querySelectorAll('.snav-dot');
+    const sectionIds = ['hero', 'projects', 'about', 'contact'];
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          snavDots.forEach(d => d.classList.remove('active'));
+          const dot = document.querySelector(`.snav-dot[href="#${e.target.id}"]`);
+          if (dot) dot.classList.add('active');
+        }
+      });
+    }, { threshold: 0.35 });
+
+    sectionIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) sectionObserver.observe(el);
     });
   </script>
 
