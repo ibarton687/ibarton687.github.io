@@ -588,9 +588,9 @@ footer {
 
 @media (max-width: 768px) {
   .project-page-body { grid-template-columns: 1fr; gap: 2rem; }
-  .project-stats-strip { position: static; flex-direction: row; flex-wrap: wrap; }
-  .pstat { flex: 1; min-width: 140px; border-bottom: none; border-right: 1px solid var(--border); }
-  .pstat:last-child { border-right: none; }
+  .project-stats-strip { position: static; flex-direction: column; }
+  .pstat { border-bottom: 1px solid var(--border); border-right: none; flex: unset; }
+  .pstat:last-child { border-bottom: none; }
 }
 
 /* ─── Project detail pages ────────────── */
@@ -693,33 +693,91 @@ footer {
 @media (max-width: 1100px) {
   .about-inner { grid-template-columns: 220px 1fr 1fr; gap: 2.5rem; }
 }
+
 @media (max-width: 960px) {
-  .hero-inner { grid-template-columns: 1fr; gap: 3rem; }
+  /* Hero */
+  .hero { min-height: unset; padding: 5.5rem 0 3.5rem; }
+  .hero-inner { grid-template-columns: 1fr; gap: 2.5rem; }
   .hero-image-wrap { display: none; }
-  .projects-list { gap: 3.5rem; }
-  .project-row { grid-template-columns: 1fr; gap: 1.5rem; min-height: unset; }
+  .hero-desc { max-width: 100%; }
+
+  /* Projects */
+  .projects { padding: 4rem 0; }
+  .projects-list { gap: 3rem; }
+  .project-row { grid-template-columns: 1fr; gap: 1.25rem; min-height: unset; }
   .project-row:nth-child(even) .project-row-image { order: unset; }
   .project-row:nth-child(even) .project-row-body  { order: unset; }
-  .project-row-image { height: 260px; }
+  .project-row-image { aspect-ratio: 16/9; height: auto; }
   .project-row-body { padding: 0; }
+  .project-row-desc { max-width: 100%; }
+
+  /* Employment */
+  .employment { padding: 4rem 0; }
+  .emp-body { grid-template-columns: 1fr; }
+  .emp-images { flex-direction: row; }
+  .emp-img { height: 140px; }
+
+  /* About */
+  .about { padding: 4rem 0; }
   .about-inner { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
   .about-photo-col { grid-column: 1 / -1; position: static; }
   .about-photo { height: 300px; object-position: center 58%; }
+
+  /* Project detail pages */
   .project-body { grid-template-columns: 1fr; }
   .project-sidebar { position: static; }
   .gallery-grid.g3 { grid-template-columns: 1fr 1fr; }
   .scroll-indicator { display: none; }
 }
+
 @media (max-width: 640px) {
   nav { padding: 0 1.25rem; }
-  .container { padding: 0 1.25rem; }
-  .hero-name { font-size: 3rem; }
-  .stats-row, .hero-stats { flex-wrap: wrap; gap: 1.5rem; }
-  .project-row-body { padding: 1.5rem; }
-  .about-inner { grid-template-columns: 1fr; }
-  .about-photo { height: 260px; object-position: center 58%; }
-  .gallery-grid, .gallery-grid.g3 { grid-template-columns: 1fr; }
-  .project-pagination { flex-direction: column; gap: 1.5rem; }
-  .contact-links { flex-direction: column; align-items: center; }
   .nav-links .hide-sm { display: none; }
+  .container { padding: 0 1.25rem; }
+
+  /* Hero */
+  .hero { padding: 4.5rem 0 3rem; }
+  .hero-name { font-size: clamp(2.6rem, 10vw, 3.25rem); }
+  .hero-subtitle { font-size: 1rem; }
+  .hero-desc { font-size: 0.9375rem; margin-bottom: 2rem; }
+  .hero-actions { flex-direction: column; gap: 0.75rem; }
+  .btn-primary, .btn-secondary { justify-content: center; text-align: center; }
+  .hero-stats { gap: 1.5rem; flex-wrap: wrap; padding-top: 1.5rem; }
+  .hstat-num { font-size: 1.375rem; }
+
+  /* Projects */
+  .projects { padding: 3.5rem 0; }
+  .projects-header { margin-bottom: 2.5rem; }
+  .projects-list { gap: 2.5rem; }
+  .project-row-body { padding: 0; }
+  .project-row-title { font-size: clamp(1.5rem, 6vw, 2rem); }
+
+  /* Employment */
+  .employment { padding: 3.5rem 0; }
+  .emp-meta { gap: 0.75rem; }
+  .emp-role-badge { margin-left: 0; }
+  .emp-body { padding: 1.25rem; gap: 1.5rem; }
+  .emp-work-areas { grid-template-columns: 1fr; gap: 1rem; }
+  .emp-images { flex-direction: column; }
+
+  /* About */
+  .about { padding: 3.5rem 0; }
+  .about-inner { grid-template-columns: 1fr; gap: 2rem; }
+  .about-photo { height: 240px; object-position: center 58%; }
+  .stats-row { flex-wrap: wrap; gap: 1.5rem; }
+
+  /* Contact */
+  .contact { padding: 3.5rem 0; }
+  .contact-links { flex-direction: column; align-items: stretch; }
+  .contact-link { justify-content: center; }
+
+  /* Gallery */
+  .gallery-grid, .gallery-grid.g3 { grid-template-columns: 1fr; }
+
+  /* Project detail pages */
+  .project-hero-section { padding: 2.5rem 0 1.5rem; }
+  .project-title { font-size: clamp(2rem, 8vw, 2.75rem); }
+  .project-cover { aspect-ratio: 4/3; margin: 1.5rem 0 2rem; }
+  .project-pagination { flex-direction: column; gap: 1.25rem; }
+  .page-link[style*="right"] { text-align: left !important; }
 }
