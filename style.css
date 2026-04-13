@@ -247,40 +247,50 @@ nav.scrolled {
 
 /* ─── Projects ────────────────────────── */
 .projects { padding: 6rem 0; }
-.projects-header { margin-bottom: 3.5rem; }
-.projects-list { display: flex; flex-direction: column; gap: 1.5rem; }
+.projects-header { margin-bottom: 5rem; }
+.projects-list { display: flex; flex-direction: column; gap: 5rem; }
 
+/* Each project is a 50/50 split section */
 .project-row {
   display: grid;
-  grid-template-columns: 420px 1fr;
+  grid-template-columns: 1fr 1fr;
+  min-height: 460px;
+  border-radius: 22px; overflow: hidden;
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: 18px; overflow: hidden;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.16,1,0.3,1);
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
 }
 .project-row:hover {
-  border-color: rgba(79,142,247,0.35);
-  box-shadow: 0 0 0 1px rgba(79,142,247,0.1), 0 24px 60px rgba(0,0,0,0.45);
-  transform: translateY(-4px);
+  border-color: rgba(79,142,247,0.4);
+  box-shadow: 0 0 0 1px rgba(79,142,247,0.1), 0 32px 80px rgba(0,0,0,0.5);
 }
+
+/* Even rows: text LEFT, image RIGHT */
+.project-row:nth-child(even) .project-row-image { order: 2; }
+.project-row:nth-child(even) .project-row-body  { order: 1; }
+
+/* Image pane */
 .project-row-image {
   overflow: hidden; background: var(--surface-2);
-  aspect-ratio: 4/3;
+  height: 100%; min-height: 460px;
 }
 .project-row-image img {
-  width: 100%; height: 100%; object-fit: cover; object-position: center center;
-  transition: transform 0.55s cubic-bezier(0.16,1,0.3,1);
+  width: 100%; height: 100%; object-fit: cover; object-position: center;
+  transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
 }
-/* Per-image crop overrides */
+.project-row:hover .project-row-image img { transform: scale(1.04); }
+
+/* Per-image crop */
 .project-row-image img[src*="h2gp-worldfinal"] { object-position: center 30%; }
-.project-row-image img[src*="arm-robot"]        { object-position: center 40%; }
-.project-row-image img[src*="torpedo-full"]     { object-position: center center; object-fit: contain; background: var(--surface-2); }
-.project-row:hover .project-row-image img { transform: scale(1.05); }
+.project-row-image img[src*="arm-robot"]        { object-position: center 35%; }
+.project-row-image img[src*="torpedo-full"]     { object-fit: contain; background: var(--surface-2); }
+
+/* Text pane */
 .project-row-body {
-  padding: 2.25rem 2.5rem;
+  padding: 3rem 3.5rem;
   display: flex; flex-direction: column; justify-content: center;
 }
 .project-row-meta {
-  display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;
+  display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap;
 }
 .project-row-num {
   font-size: 0.65rem; font-weight: 800; color: var(--text-3);
@@ -294,33 +304,46 @@ nav.scrolled {
   border: 1px solid rgba(79,142,247,0.2); letter-spacing: 0.02em;
 }
 .project-row-title {
-  font-size: clamp(1.375rem, 2.5vw, 1.75rem);
-  font-weight: 800; letter-spacing: -0.035em;
-  color: var(--text); margin-bottom: 0.75rem; line-height: 1.15;
+  font-size: clamp(1.5rem, 2.8vw, 2.125rem);
+  font-weight: 800; letter-spacing: -0.04em;
+  color: var(--text); margin-bottom: 1rem; line-height: 1.1;
 }
 .project-row-desc {
-  font-size: 0.9375rem; color: var(--text-2);
-  line-height: 1.7; margin-bottom: 1.75rem; max-width: 520px;
+  font-size: 1rem; color: var(--text-2);
+  line-height: 1.75; margin-bottom: 2rem;
 }
 .card-link {
-  font-size: 0.875rem; font-weight: 600; color: var(--accent);
-  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-size: 0.9375rem; font-weight: 600; color: var(--accent);
+  display: inline-flex; align-items: center; gap: 0.5rem;
   transition: gap var(--t);
 }
-.project-row:hover .card-link { gap: 0.75rem; }
+.project-row:hover .card-link { gap: 0.875rem; }
 
-/* ─── Image scroll fade-in ─────────────── */
+/* ── Scroll slide-in animations ──────── */
+/* Image: slides from its side */
+.project-row:nth-child(odd)  .project-row-image { opacity: 0; transform: translateX(-56px); }
+.project-row:nth-child(even) .project-row-image { opacity: 0; transform: translateX(56px);  }
+.project-row-image {
+  transition: opacity 0.85s cubic-bezier(0.16,1,0.3,1),
+              transform 0.85s cubic-bezier(0.16,1,0.3,1);
+}
+/* Text: fades up with a slight delay */
+.project-row-body {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1) 0.18s,
+              transform 0.75s cubic-bezier(0.16,1,0.3,1) 0.18s;
+}
+/* In-view: everything resets */
+.project-row.in-view .project-row-image { opacity: 1; transform: none; }
+.project-row.in-view .project-row-body  { opacity: 1; transform: none; }
+
+/* ─── Image scroll fade-in (about / hero) */
 .img-reveal {
-  opacity: 0;
-  transform: translateY(20px) scale(0.98);
+  opacity: 0; transform: translateY(20px) scale(0.98);
   transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1),
               transform 0.7s cubic-bezier(0.16,1,0.3,1);
-  will-change: opacity, transform;
 }
-.img-reveal.img-visible {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
+.img-reveal.img-visible { opacity: 1; transform: translateY(0) scale(1); }
 
 /* ─── About / Skills ──────────────────── */
 .about {
@@ -502,8 +525,12 @@ footer {
 @media (max-width: 960px) {
   .hero-inner { grid-template-columns: 1fr; gap: 3rem; }
   .hero-image-wrap { display: none; }
-  .project-row { grid-template-columns: 1fr; }
-  .project-row-image { aspect-ratio: 16/9; }
+  .projects-list { gap: 3rem; }
+  .project-row { grid-template-columns: 1fr; min-height: unset; }
+  .project-row:nth-child(even) .project-row-image { order: unset; }
+  .project-row:nth-child(even) .project-row-body  { order: unset; }
+  .project-row-image { min-height: 280px; height: 280px; }
+  .project-row-body { padding: 2rem 2rem; }
   .about-inner { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
   .about-photo-col { grid-column: 1 / -1; position: static; }
   .about-photo { height: 300px; object-position: center 58%; }

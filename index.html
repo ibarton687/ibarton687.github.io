@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ivan Bartonicek — Mechatronics Engineer</title>
   <meta name="description" content="Czech mechatronics student based in Eindhoven. Building real machines — hydrogen RC cars, robotic arms, and EV chassis. H2GP World Finals, Forbes featured.">
-  <link rel="stylesheet" href="style.css?v=5">
+  <link rel="stylesheet" href="style.css?v=6">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..900;1,14..32,300..900&display=swap" rel="stylesheet">
@@ -77,7 +77,7 @@
       </div>
       <div class="projects-list">
 
-        <a href="h2gp.html" class="project-row reveal">
+        <a href="h2gp.html" class="project-row">
           <div class="project-row-image">
             <img src="images/h2gp-worldfinal.jpg" alt="H2GP World Final 2023 — Las Vegas">
           </div>
@@ -96,7 +96,7 @@
           </div>
         </a>
 
-        <a href="arm.html" class="project-row reveal">
+        <a href="arm.html" class="project-row">
           <div class="project-row-image">
             <img src="images/arm-robot.png" alt="Mechanical Arm and Gripper">
           </div>
@@ -116,7 +116,7 @@
           </div>
         </a>
 
-        <a href="torpedo.html" class="project-row reveal">
+        <a href="torpedo.html" class="project-row">
           <div class="project-row-image">
             <img src="images/torpedo-full.png" alt="Torpedo Kid EV Chassis">
           </div>
@@ -267,14 +267,23 @@
 
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-    // ── Image fade-in on scroll
+    // ── Project rows: directional slide-in
+    const projectObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        e.target.classList.toggle('in-view', e.isIntersecting);
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.project-row').forEach(row => projectObserver.observe(row));
+
+    // ── Other images: fade + rise
     const imgObserver = new IntersectionObserver((entries) => {
       entries.forEach(e => {
         e.target.classList.toggle('img-visible', e.isIntersecting);
       });
     }, { threshold: 0.1 });
 
-    document.querySelectorAll('.project-row-image img, .about-photo, .hero-image-inner img').forEach(img => {
+    document.querySelectorAll('.about-photo, .hero-image-inner img').forEach(img => {
       img.classList.add('img-reveal');
       imgObserver.observe(img);
     });
