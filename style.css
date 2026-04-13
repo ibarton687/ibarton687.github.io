@@ -312,7 +312,8 @@ nav.scrolled {
 .project-row-image img[src*="torpedo-full"] {
   object-fit: contain; object-position: center center;
 }
-.project-row-image img[src*="arm-robot"] {
+.project-row-image img[src*="arm-robot"],
+.project-row-image img[src*="arm-photo"] {
   object-fit: cover; object-position: center 35%;
 }
 .project-row-image img[src*="h2gp-worldfinal"] {
@@ -452,6 +453,50 @@ nav.scrolled {
 footer {
   padding: 2rem 0; border-top: 1px solid var(--border);
   text-align: center; font-size: 0.8125rem; color: var(--text-3);
+}
+
+/* ─── Project stats strip ─────────────── */
+.project-stats-strip {
+  display: flex; align-items: stretch; gap: 0;
+  border: 1px solid var(--border); border-radius: 14px;
+  background: var(--surface); overflow: hidden;
+  margin-bottom: 3.5rem;
+}
+.pstat {
+  flex: 1; padding: 1.25rem 1.75rem;
+  display: flex; flex-direction: column; gap: 0.375rem;
+}
+.pstat-label {
+  font-size: 0.65rem; font-weight: 700; color: var(--text-3);
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+.pstat-value { font-size: 0.9375rem; color: var(--text-2); line-height: 1.45; font-weight: 500; }
+.pstat-green { color: #4ADE80; }
+.pstat-blue  { color: var(--accent); }
+.pstat-divider { width: 1px; background: var(--border); flex-shrink: 0; }
+
+/* Full-width project content (no sidebar) */
+.project-content-full {
+  max-width: 720px; margin-bottom: 4rem;
+}
+.project-content-full h2 {
+  font-size: 1.25rem; font-weight: 700; letter-spacing: -0.025em;
+  margin-bottom: 0.875rem; margin-top: 2.5rem; color: var(--text);
+}
+.project-content-full h2:first-child { margin-top: 0; }
+.project-content-full p { font-size: 1rem; color: var(--text-2); line-height: 1.75; margin-bottom: 0.875rem; }
+.project-content-full ul { list-style: none; margin-bottom: 0.875rem; }
+.project-content-full ul li {
+  font-size: 0.9375rem; color: var(--text-2); line-height: 1.65;
+  padding: 0.625rem 0 0.625rem 1.375rem;
+  position: relative; border-bottom: 1px solid var(--border);
+}
+.project-content-full ul li:first-child { border-top: 1px solid var(--border); }
+.project-content-full ul li::before { content: '—'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+
+@media (max-width: 640px) {
+  .project-stats-strip { flex-direction: column; }
+  .pstat-divider { width: auto; height: 1px; }
 }
 
 /* ─── Project detail pages ────────────── */
