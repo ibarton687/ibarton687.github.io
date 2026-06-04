@@ -1,0 +1,2475 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EDS4 Study App</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="window._katexAutoRenderReady=true"></script>
+<style>
+:root{--bg:#0d0f1a;--bg2:#141728;--bg3:#1c2038;--bg4:#242848;--accent:#7c6fff;--cyan:#00d4ff;--green:#00e676;--yellow:#ffd740;--red:#ff5252;--pink:#ff6584;--text:#e8eaf6;--text2:#9fa8da;--border:#2a2f52;--card:#181b2e}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+#app{display:flex;height:100vh}
+/* SIDEBAR */
+#sb{width:250px;min-width:250px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto}
+#sb-head{padding:16px;border-bottom:1px solid var(--border)}
+#sb-head h1{font-size:1rem;color:var(--accent);font-weight:800;display:flex;align-items:center;gap:6px}
+#sb-head p{font-size:.7rem;color:var(--text2);margin-top:2px}
+.pb{height:5px;background:var(--bg3);border-radius:3px;margin-top:8px}
+.pbf{height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan));border-radius:3px;transition:width .5s}
+.pl{font-size:.68rem;color:var(--text2);margin-top:3px}
+nav{flex:1;padding:6px 0}
+.ns{padding:8px 14px 3px;font-size:.65rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--text2)}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 14px;cursor:pointer;font-size:.83rem;border-left:3px solid transparent;transition:all .15s;position:relative}
+.ni:hover{background:var(--bg3);color:var(--text)}
+.ni.active{border-left-color:var(--accent);background:var(--bg3);color:var(--accent)}
+.ni .nn{width:20px;height:20px;border-radius:50%;background:var(--bg4);font-size:.7rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700}
+.ni.active .nn{background:var(--accent);color:#fff}
+.ni .nct{margin-left:auto;font-size:.68rem;color:var(--text2)}
+.ni.active .nct{color:var(--accent)}
+/* MAIN */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+#topbar h2{font-size:1rem;font-weight:700;flex-shrink:0}
+.tabs{display:flex;gap:3px;margin-left:auto;flex-wrap:wrap}
+.tb{padding:5px 12px;border-radius:6px;font-size:.75rem;cursor:pointer;background:var(--bg3);border:1px solid var(--border);color:var(--text2);transition:all .15s;font-weight:600}
+.tb:hover,.tb.active{background:var(--accent);border-color:var(--accent);color:#fff}
+#content{flex:1;overflow-y:auto;padding:20px}
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px}
+.card h3{font-size:.95rem;font-weight:700;margin-bottom:14px;color:var(--cyan);display:flex;align-items:center;gap:8px}
+/* THEORY */
+.th h4{font-size:.85rem;font-weight:700;color:var(--yellow);margin:14px 0 7px;border-left:3px solid var(--yellow);padding-left:8px}
+.th p,.th li{font-size:.84rem;line-height:1.7;color:var(--text2)}
+.th ul,.th ol{padding-left:16px;margin-bottom:8px}
+.th li{margin-bottom:3px}
+.th strong{color:var(--text)}
+.hl{background:var(--bg3);border-left:3px solid var(--accent);padding:9px 13px;border-radius:0 8px 8px 0;margin:8px 0;font-size:.83rem;line-height:1.6}
+/* YouTube thumbnail link */
+.yt-thumb{display:block;position:relative;border-radius:10px;overflow:hidden;margin:14px 0;cursor:pointer;text-decoration:none;background:#111;border:1px solid var(--border)}
+.yt-thumb img{width:100%;display:block;aspect-ratio:16/9;object-fit:cover;transition:opacity .2s}
+.yt-thumb:hover img{opacity:.8}
+.yt-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:46px;background:rgba(220,0,0,.92);border-radius:12px;display:flex;align-items:center;justify-content:center;pointer-events:none;box-shadow:0 2px 12px rgba(0,0,0,.5)}
+.yt-play::after{content:'';border-left:22px solid #fff;border-top:13px solid transparent;border-bottom:13px solid transparent;margin-left:5px}
+.yt-label{font-size:.72rem;color:var(--text2);margin:-8px 0 14px;text-align:center}
+/* Theory worked examples */
+.th .ex{background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:10px 0;font-size:.82rem}
+.th .ex-title{font-weight:700;color:var(--cyan);margin-bottom:7px;font-size:.8rem}
+.th .ex code{background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:.8rem;color:var(--green)}
+.th .def{display:flex;gap:6px;align-items:baseline;margin-bottom:4px;font-size:.83rem}
+.th .def .sym{min-width:80px;font-weight:700;color:var(--cyan);font-size:.8rem}
+.th .def .desc{color:var(--text2);line-height:1.5}
+.warn{border-left-color:var(--red)!important}
+.tip{border-left-color:var(--green)!important}
+/* QUIZ */
+.qbox{margin-bottom:22px;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.qhead{padding:12px 14px;background:var(--bg3);display:flex;align-items:flex-start;gap:10px}
+.qnum{background:var(--accent);color:#fff;border-radius:5px;padding:2px 8px;font-size:.72rem;font-weight:800;flex-shrink:0;margin-top:1px}
+.qsrc{background:var(--bg4);border:1px solid var(--border);color:var(--text2);border-radius:4px;padding:1px 7px;font-size:.68rem;margin-left:4px}
+.qtype{font-size:.68rem;border-radius:4px;padding:1px 7px;margin-left:4px}
+.qtype.calc{background:rgba(255,215,64,.15);color:var(--yellow);border:1px solid rgba(255,215,64,.3)}
+.qtype.ds{background:rgba(255,101,132,.15);color:var(--pink);border:1px solid rgba(255,101,132,.3)}
+.qtype.diag{background:rgba(0,212,255,.15);color:var(--cyan);border:1px solid rgba(0,212,255,.3)}
+.qtxt{font-size:.87rem;font-weight:500;line-height:1.6;flex:1}
+.qbody{padding:0 14px 14px}
+.qdiag{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;margin:10px 0;overflow-x:auto;text-align:center}
+.opts{display:flex;flex-direction:column;gap:5px;margin-top:10px}
+.opt{display:flex;align-items:flex-start;gap:9px;padding:9px 12px;border-radius:7px;border:1px solid var(--border);cursor:pointer;font-size:.83rem;transition:all .15s;background:var(--bg3)}
+.opt:hover:not(.dis){border-color:var(--accent);background:var(--bg4)}
+.opt .ol{font-weight:800;color:var(--accent);min-width:14px;flex-shrink:0}
+.opt.ok{border-color:var(--green)!important;background:rgba(0,230,118,.08)!important}
+.opt.ok .ol{color:var(--green)}
+.opt.bad{border-color:var(--red)!important;background:rgba(255,82,82,.08)!important}
+.opt.bad .ol{color:var(--red)}
+.opt.dis{cursor:default}
+.exp{background:var(--bg3);border-left:3px solid var(--green);padding:10px 13px;border-radius:0 8px 8px 0;margin-top:8px;font-size:.82rem;color:var(--text2);display:none;line-height:1.6}
+.exp.show{display:block}
+.exp strong{color:var(--green)}
+/* CALC STEPS */
+.steps{margin-top:10px}
+.step{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:10px 13px;margin-bottom:6px;font-size:.82rem}
+.step .sn{color:var(--cyan);font-weight:700;margin-bottom:4px}
+.step .sf{font-family:'Courier New',monospace;background:var(--bg4);padding:4px 8px;border-radius:4px;margin:4px 0;display:inline-block;color:var(--yellow)}
+/* FLASHCARDS */
+.fc-wrap{perspective:1000px;cursor:pointer;margin-bottom:14px}
+.fc{width:100%;height:180px;position:relative;transform-style:preserve-3d;transition:transform .5s;border-radius:12px}
+.fc.flip{transform:rotateY(180deg)}
+.fc-f,.fc-b{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:18px 20px;text-align:center;overflow-y:auto}
+.fc-f{background:linear-gradient(135deg,var(--bg3),var(--bg4));border:1px solid var(--border)}
+.fc-b{background:linear-gradient(135deg,rgba(124,111,255,.15),rgba(0,212,255,.1));border:1px solid var(--accent);transform:rotateY(180deg)}
+.fc-f .ft{font-size:.9rem;font-weight:600}
+.fc-b .bt{font-size:.85rem;color:var(--text2);line-height:1.6}
+.fc-hint{font-size:.68rem;color:var(--text2);text-align:center;margin-bottom:10px}
+/* FORMULAS */
+.fg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.fb{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:18px 14px;text-align:center;transition:border-color .2s;overflow:hidden}
+.fb:hover{border-color:var(--accent)}
+.fb .ff{color:var(--cyan);margin-bottom:8px;min-height:40px;display:flex;align-items:center;justify-content:center;overflow-x:auto;max-width:100%}
+.fb .fd{font-size:.75rem;color:var(--text2);line-height:1.4}
+.katex{color:var(--cyan)!important}
+.katex .mord,.katex .mbin,.katex .mrel,.katex .mpunct{color:var(--text)!important}
+.katex .mfrac .frac-line{border-color:var(--cyan)!important}
+.hl .katex,.tip .katex,.warn .katex{color:var(--text)!important}
+.hl .katex .mord{color:var(--text)!important}
+/* Flashcard back: softer colours */
+.fc-b .katex{color:var(--text)!important;font-size:1.1rem}
+.fc-b .katex-display{margin:.4em 0}
+.fc-b .katex .mord,.fc-b .katex .mbin,.fc-b .katex .mrel{color:var(--text)!important}
+.fc-b .katex .mfrac .frac-line{border-color:var(--cyan)!important}
+/* TABLES */
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+th{background:var(--bg3);color:var(--cyan);padding:8px 11px;text-align:left;border-bottom:2px solid var(--border)}
+td{padding:7px 11px;border-bottom:1px solid var(--border);color:var(--text2)}
+tr:hover td{background:rgba(124,111,255,.04)}
+/* BUTTONS */
+.btn{padding:7px 16px;border-radius:7px;border:none;cursor:pointer;font-size:.8rem;font-weight:700;transition:all .15s}
+.btn-p{background:var(--accent);color:#fff}
+.btn-p:hover{background:#8f84ff}
+.btn-o{background:transparent;border:1px solid var(--border);color:var(--text2)}
+.btn-o:hover{border-color:var(--accent);color:var(--accent)}
+.btn-g{background:var(--green);color:#000}
+/* SCORE BAR */
+.scorebar{display:flex;gap:16px;align-items:center;background:var(--bg3);border-radius:8px;padding:10px 14px;margin-bottom:14px;flex-wrap:wrap}
+.sc{text-align:center}
+.sc .sv{font-size:1.3rem;font-weight:800;color:var(--cyan)}
+.sc .sl{font-size:.68rem;color:var(--text2)}
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:18px;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;background:radial-gradient(circle,rgba(124,111,255,.12) 0%,transparent 70%);border-radius:50%}
+.hero h2{font-size:1.3rem;font-weight:800;margin-bottom:6px}
+.hero p{color:var(--text2);font-size:.85rem;line-height:1.6;max-width:580px}
+.badges{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+.badge{padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:700}
+.b1{background:rgba(124,111,255,.2);color:var(--accent);border:1px solid rgba(124,111,255,.3)}
+.b2{background:rgba(255,101,132,.2);color:var(--pink);border:1px solid rgba(255,101,132,.3)}
+.b3{background:rgba(255,215,64,.2);color:var(--yellow);border:1px solid rgba(255,215,64,.3)}
+.b4{background:rgba(0,230,118,.2);color:var(--green);border:1px solid rgba(0,230,118,.3)}
+/* TOPIC GRID */
+.tg{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:16px}
+.tc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:15px;cursor:pointer;transition:all .2s}
+.tc:hover{border-color:var(--accent);transform:translateY(-2px)}
+.tc .tn{font-size:.68rem;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px}
+.tc .tt{font-size:.88rem;font-weight:700;margin-bottom:5px}
+.tc .td{font-size:.75rem;color:var(--text2)}
+.tc .tq{font-size:.7rem;color:var(--text2);margin-top:6px}
+/* DIVIDER */
+.divider{display:flex;align-items:center;gap:10px;margin:18px 0 12px}
+.divider span{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2);white-space:nowrap}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+/* SVG diagrams */
+.svgwrap{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;margin:8px 0;text-align:center;overflow-x:auto}
+.svgwrap svg{display:inline-block}
+/* EXAM TIMER */
+.etimer{background:rgba(255,82,82,.1);border:1px solid rgba(255,82,82,.3);border-radius:8px;padding:8px 16px;display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.etimer .et{font-size:1.4rem;font-weight:800;font-family:monospace;color:var(--red)}
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+/* PROGRESS RING */
+.pring{display:inline-flex;align-items:center;justify-content:center;position:relative}
+/* FORMULA PANEL */
+#fml-panel{position:fixed;top:0;right:-430px;width:410px;height:100vh;background:var(--bg2);border-left:1px solid var(--border);z-index:1000;display:flex;flex-direction:column;transition:right .3s cubic-bezier(.4,0,.2,1);box-shadow:-6px 0 30px rgba(0,0,0,.5)}
+#fml-panel.open{right:0}
+#fml-panel-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--bg3)}
+#fml-panel-body{flex:1;overflow-y:auto;padding:14px}
+.fml-sec{margin-bottom:18px}
+.fml-sec-title{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:var(--accent);padding-bottom:5px;border-bottom:1px solid var(--border);margin-bottom:8px}
+.fml-row{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;border:1px solid transparent;margin-bottom:3px;transition:all .25s;cursor:default}
+.fml-row:hover{background:var(--bg3);border-color:var(--border)}
+.fml-row.hl{border-color:var(--yellow)!important;background:rgba(255,215,64,.1)!important;box-shadow:0 0 10px rgba(255,215,64,.25)}
+.fml-row .fml-katex{flex:1;min-width:0;overflow-x:auto}
+.fml-row .fml-lbl{font-size:.68rem;color:var(--text2);white-space:nowrap;padding-left:8px;border-left:1px solid var(--border);min-width:90px;text-align:right}
+.fml-row.hl .fml-lbl{color:var(--yellow)}
+/* KaTeX size override for panel */
+#fml-panel-body .katex{font-size:1rem!important;color:var(--cyan)!important}
+#fml-panel-body .katex .mord{color:var(--text)!important}
+#fml-panel-body .katex .mfrac .frac-line{border-color:var(--cyan)!important}
+/* Floating action button */
+#fab-fml{position:fixed;bottom:22px;right:22px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--cyan));color:#fff;font-size:1.4rem;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(124,111,255,.5);z-index:999;transition:all .2s;display:flex;align-items:center;justify-content:center}
+#fab-fml:hover{transform:scale(1.1);box-shadow:0 6px 22px rgba(124,111,255,.7)}
+#fab-fml.active{background:linear-gradient(135deg,var(--yellow),#ff9800)}
+/* HINT */
+.hint-btn{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:6px;border:1px solid rgba(255,215,64,.4);background:rgba(255,215,64,.07);color:var(--yellow);font-size:.74rem;cursor:pointer;font-weight:700;transition:all .15s;margin-top:10px}
+.hint-btn:hover{background:rgba(255,215,64,.18);border-color:var(--yellow)}
+.hint-box{background:rgba(255,215,64,.06);border-left:3px solid var(--yellow);border-radius:0 8px 8px 0;padding:9px 13px;margin-top:6px;font-size:.82rem;color:var(--yellow);display:none;line-height:1.6;animation:fadein .2s}
+.hint-box.show{display:block}
+@keyframes fadein{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+/* OPEN ANSWER QUESTIONS */
+.qtype.open{background:rgba(0,230,118,.15);color:var(--green);border:1px solid rgba(0,230,118,.3)}
+.open-area{margin-top:10px}
+.open-input{width:100%;background:var(--bg4);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.84rem;padding:10px 12px;font-family:'Segoe UI',system-ui,sans-serif;resize:vertical;min-height:90px;transition:border-color .2s;line-height:1.6}
+.open-input:focus{outline:none;border-color:var(--accent)}
+.open-num-wrap{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.open-num{width:160px;background:var(--bg4);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:1.1rem;padding:9px 13px;font-family:'Courier New',monospace;transition:border-color .2s;text-align:center}
+.open-num:focus{outline:none;border-color:var(--accent)}
+.open-unit{color:var(--text2);font-size:.9rem;font-style:italic}
+.open-result{padding:12px 14px;border-radius:8px;margin-top:10px;font-size:.83rem;line-height:1.6;display:none}
+.open-result.ok{background:rgba(0,230,118,.07);border:1px solid var(--green);color:var(--text);display:block}
+.open-result.bad{background:rgba(255,82,82,.07);border:1px solid var(--red);color:var(--text);display:block}
+.open-result .or-header{font-weight:800;font-size:.88rem;margin-bottom:6px}
+.ok .or-header{color:var(--green)}
+.bad .or-header{color:var(--red)}
+.kw-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.72rem;font-weight:700;margin:2px}
+.kw-hit{background:rgba(0,230,118,.15);color:var(--green);border:1px solid rgba(0,230,118,.3)}
+.kw-miss{background:rgba(255,82,82,.1);color:var(--red);border:1px solid rgba(255,82,82,.3);text-decoration:line-through}
+.open-model{margin-top:10px;padding:10px 12px;background:var(--bg3);border-radius:7px;border-left:3px solid var(--cyan)}
+.open-model strong{color:var(--cyan);display:block;margin-bottom:4px;font-size:.78rem;text-transform:uppercase;letter-spacing:.5px}
+.open-model p{color:var(--text2);font-size:.82rem;line-height:1.6}
+.open-yours{margin-top:6px;padding:8px 11px;background:var(--bg3);border-radius:6px;font-size:.78rem;color:var(--text2)}
+.open-yours em{color:var(--text)}
+</style>
+</head>
+<body>
+<button id="fab-fml" onclick="toggleFormulaPanel()" title="Formula Sheet">📐</button>
+<div id="fml-panel">
+  <div id="fml-panel-head">
+    <span style="font-weight:800;color:var(--cyan);font-size:.95rem">📐 Formula Sheet</span>
+    <button onclick="closeFormulaPanel()" style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:1.2rem;line-height:1;padding:2px 6px">✕</button>
+  </div>
+  <div id="fml-panel-body"><p style="color:var(--text2);font-size:.82rem;padding:10px">Loading...</p></div>
+</div>
+<div id="app">
+<div id="sb">
+  <div id="sb-head">
+    <h1>⚡ EDS4 Study</h1>
+    <p>Electrical Drive Systems 4 — Fontys</p>
+    <div class="pb"><div class="pbf" id="pbf" style="width:0%"></div></div>
+    <div class="pl" id="pbl">0 / 0 questions mastered</div>
+  </div>
+  <nav id="nav"></nav>
+</div>
+<div id="main">
+  <div id="topbar">
+    <h2 id="tbtitle">⚡ Overview</h2>
+    <div class="tabs" id="tabs"></div>
+  </div>
+  <div id="content"></div>
+</div>
+</div>
+<script>
+// ─────────────────────────────────────────────
+// SVG DIAGRAMS
+// ─────────────────────────────────────────────
+const SVG = {
+hbridge:`<svg width="400" height="260" viewBox="0 0 400 260">
+  <text x="200" y="14" fill="#9fa8da" text-anchor="middle" font-size="11" font-family="monospace">H-Bridge Circuit</text>
+  <line x1="40" y1="30" x2="360" y2="30" stroke="#00d4ff" stroke-width="2"/>
+  <text x="10" y="35" fill="#ffd740" font-size="10" font-family="monospace">+V</text>
+  <line x1="40" y1="230" x2="360" y2="230" stroke="#00d4ff" stroke-width="2"/>
+  <text x="10" y="235" fill="#ffd740" font-size="10" font-family="monospace">GND</text>
+  <rect x="55" y="42" width="55" height="28" rx="4" fill="#1c2038" stroke="#7c6fff" stroke-width="1.5"/>
+  <text x="82" y="60" fill="#e8eaf6" text-anchor="middle" font-size="11" font-family="monospace">Q1</text>
+  <rect x="55" y="170" width="55" height="28" rx="4" fill="#1c2038" stroke="#7c6fff" stroke-width="1.5"/>
+  <text x="82" y="188" fill="#e8eaf6" text-anchor="middle" font-size="11" font-family="monospace">Q3</text>
+  <rect x="290" y="42" width="55" height="28" rx="4" fill="#1c2038" stroke="#7c6fff" stroke-width="1.5"/>
+  <text x="317" y="60" fill="#e8eaf6" text-anchor="middle" font-size="11" font-family="monospace">Q2</text>
+  <rect x="290" y="170" width="55" height="28" rx="4" fill="#1c2038" stroke="#7c6fff" stroke-width="1.5"/>
+  <text x="317" y="188" fill="#e8eaf6" text-anchor="middle" font-size="11" font-family="monospace">Q4</text>
+  <line x1="82" y1="30" x2="82" y2="42" stroke="#9fa8da" stroke-width="1.5"/>
+  <line x1="82" y1="70" x2="82" y2="115" stroke="#9fa8da" stroke-width="1.5"/>
+  <line x1="82" y1="170" x2="82" y2="115" stroke="#9fa8da" stroke-width="1.5"/>
+  <line x1="82" y1="198" x2="82" y2="230" stroke="#9fa8da" stroke-width="1.5"/>
+  <line x1="317" y1="30" x2="317" y2="42" stroke="#9fa8da" stroke-width="1.5"/>
+  <line x1="317" y1="70" x2="317" y2="145" stroke="#9fa8da" stroke-width="1.5"/>
+  <line x1="317" y1="170" x2="317" y2="145" stroke="#9fa8da" stroke-width="1.5"/>
+  <line x1="317" y1="198" x2="317" y2="230" stroke="#9fa8da" stroke-width="1.5"/>
+  <rect x="152" y="105" width="96" height="50" rx="8" fill="#141728" stroke="#00e676" stroke-width="2"/>
+  <text x="200" y="126" fill="#00e676" text-anchor="middle" font-size="12" font-family="monospace" font-weight="bold">MOTOR</text>
+  <text x="200" y="143" fill="#9fa8da" text-anchor="middle" font-size="10" font-family="monospace">L, R, Ke</text>
+  <line x1="82" y1="130" x2="152" y2="130" stroke="#00e676" stroke-width="1.5"/>
+  <line x1="248" y1="130" x2="317" y2="130" stroke="#00e676" stroke-width="1.5"/>
+  <text x="200" y="248" fill="#ffd740" text-anchor="middle" font-size="9" font-family="monospace">FWD:Q1+Q4 | REV:Q2+Q3 | BRAKE:Q1+Q3 | COAST:all OFF</text>
+</svg>`,
+
+encoder_waves:`<svg width="420" height="180" viewBox="0 0 420 180">
+  <text x="10" y="14" fill="#9fa8da" font-size="10" font-family="monospace">Quadrature Encoder Signals</text>
+  <text x="10" y="35" fill="#00d4ff" font-size="10" font-family="monospace">A</text>
+  <polyline points="20,55 20,30 80,30 80,55 140,55 140,30 200,30 200,55 260,55 260,30 320,30 320,55 380,55" fill="none" stroke="#00d4ff" stroke-width="2"/>
+  <text x="10" y="95" fill="#ffd740" font-size="10" font-family="monospace">B</text>
+  <polyline points="20,115 50,115 50,90 110,90 110,115 170,115 170,90 230,90 230,115 290,115 290,90 350,90 350,115 380,115" fill="none" stroke="#ffd740" stroke-width="2"/>
+  <text x="10" y="150" fill="#ff6584" font-size="10" font-family="monospace">Z</text>
+  <polyline points="20,165 185,165 185,150 205,150 205,165 380,165" fill="none" stroke="#ff6584" stroke-width="2"/>
+  <text x="200" y="175" fill="#9fa8da" text-anchor="middle" font-size="9" font-family="monospace">A leads B → CW | B leads A → CCW | Z = 1 pulse/rev (home)</text>
+</svg>`,
+
+hall_sensor:`<svg width="380" height="200" viewBox="0 0 380 200">
+  <text x="190" y="14" fill="#9fa8da" text-anchor="middle" font-size="10" font-family="monospace">Hall Effect Current Sensor</text>
+  <rect x="140" y="60" width="100" height="80" rx="6" fill="#1c2038" stroke="#00d4ff" stroke-width="1.5"/>
+  <text x="190" y="96" fill="#00d4ff" text-anchor="middle" font-size="10" font-family="monospace">HALL</text>
+  <text x="190" y="110" fill="#00d4ff" text-anchor="middle" font-size="10" font-family="monospace">ELEMENT</text>
+  <line x1="20" y1="100" x2="140" y2="100" stroke="#ffd740" stroke-width="3"/>
+  <text x="80" y="90" fill="#ffd740" font-size="10" font-family="monospace" text-anchor="middle">I (measured)</text>
+  <line x1="240" y1="100" x2="360" y2="100" stroke="#ffd740" stroke-width="3"/>
+  <polygon points="20,95 20,105 10,100" fill="#ffd740"/>
+  <line x1="190" y1="140" x2="190" y2="185" stroke="#9fa8da" stroke-width="1.5"/>
+  <text x="190" y="197" fill="#00e676" text-anchor="middle" font-size="10" font-family="monospace">V_Hall output</text>
+  <text x="190" y="50" fill="#ff6584" text-anchor="middle" font-size="9" font-family="monospace">B field (from measured current) acts on Hall element</text>
+  <text x="190" y="175" fill="#9fa8da" text-anchor="middle" font-size="9" font-family="monospace">V_H = (I_ctrl × B) / (n·e·d)</text>
+</svg>`,
+
+dig_input:`<svg width="380" height="200" viewBox="0 0 380 200">
+  <text x="190" y="14" fill="#9fa8da" text-anchor="middle" font-size="10" font-family="monospace">Digital Input Protection Circuit</text>
+  <line x1="20" y1="100" x2="80" y2="100" stroke="#9fa8da" stroke-width="2"/>
+  <text x="10" y="95" fill="#ffd740" font-size="9" font-family="monospace">Vin</text>
+  <rect x="80" y="88" width="40" height="24" rx="3" fill="#1c2038" stroke="#7c6fff" stroke-width="1.5"/>
+  <text x="100" y="104" fill="#e8eaf6" text-anchor="middle" font-size="10" font-family="monospace">R</text>
+  <line x1="120" y1="100" x2="200" y2="100" stroke="#9fa8da" stroke-width="2"/>
+  <line x1="200" y1="100" x2="200" y2="60" stroke="#9fa8da" stroke-width="1.5"/>
+  <polygon points="195,50 205,50 200,40" fill="#00d4ff" stroke="#00d4ff"/>
+  <line x1="195" y1="50" x2="205" y2="50" stroke="#00d4ff" stroke-width="1.5"/>
+  <line x1="200" y1="40" x2="200" y2="30" stroke="#9fa8da" stroke-width="1.5"/>
+  <text x="215" y="50" fill="#00d4ff" font-size="9" font-family="monospace">D1→Vcc</text>
+  <line x1="200" y1="100" x2="200" y2="140" stroke="#9fa8da" stroke-width="1.5"/>
+  <polygon points="205,155 195,155 200,165" fill="#00d4ff" stroke="#00d4ff"/>
+  <line x1="195" y1="155" x2="205" y2="155" stroke="#00d4ff" stroke-width="1.5"/>
+  <line x1="200" y1="165" x2="200" y2="175" stroke="#9fa8da" stroke-width="1.5"/>
+  <text x="215" y="165" fill="#00d4ff" font-size="9" font-family="monospace">D2→GND</text>
+  <line x1="200" y1="100" x2="320" y2="100" stroke="#9fa8da" stroke-width="2"/>
+  <rect x="320" y="80" width="50" height="40" rx="5" fill="#1c2038" stroke="#00e676" stroke-width="1.5"/>
+  <text x="345" y="104" fill="#00e676" text-anchor="middle" font-size="9" font-family="monospace">MCU IN</text>
+  <text x="190" y="190" fill="#9fa8da" text-anchor="middle" font-size="9" font-family="monospace">Diodes clamp Vin to [GND-0.7V … Vcc+0.7V] → protect MCU pin</text>
+</svg>`,
+
+optocoupler:`<svg width="400" height="200" viewBox="0 0 400 200">
+  <text x="200" y="14" fill="#9fa8da" text-anchor="middle" font-size="10" font-family="monospace">Optocoupler (CNY17) — Galvanic Isolation</text>
+  <rect x="10" y="25" width="170" height="150" rx="6" fill="none" stroke="#7c6fff" stroke-width="1" stroke-dasharray="4"/>
+  <text x="95" y="38" fill="#7c6fff" text-anchor="middle" font-size="9" font-family="monospace">INPUT SIDE</text>
+  <rect x="220" y="25" width="170" height="150" rx="6" fill="none" stroke="#00d4ff" stroke-width="1" stroke-dasharray="4"/>
+  <text x="305" y="38" fill="#00d4ff" text-anchor="middle" font-size="9" font-family="monospace">OUTPUT SIDE (isolated)</text>
+  <line x1="20" y1="100" x2="60" y2="100" stroke="#9fa8da" stroke-width="1.5"/>
+  <text x="20" y="90" fill="#ffd740" font-size="9" font-family="monospace">Vin</text>
+  <rect x="60" y="88" width="30" height="24" rx="2" fill="#1c2038" stroke="#9fa8da" stroke-width="1"/>
+  <text x="75" y="104" fill="#9fa8da" text-anchor="middle" font-size="9" font-family="monospace">R</text>
+  <line x1="90" y1="100" x2="120" y2="100" stroke="#9fa8da" stroke-width="1.5"/>
+  <circle cx="130" cy="100" r="12" fill="#1c2038" stroke="#ff6584" stroke-width="1.5"/>
+  <text x="130" y="104" fill="#ff6584" text-anchor="middle" font-size="10" font-family="monospace">LED</text>
+  <line x1="142" y1="100" x2="165" y2="100" stroke="#9fa8da" stroke-width="1.5"/>
+  <line x1="165" y1="100" x2="165" y2="165" stroke="#9fa8da" stroke-width="1.5"/>
+  <line x1="165" y1="165" x2="20" y2="165" stroke="#9fa8da" stroke-width="1.5"/>
+  <text x="20" y="180" fill="#ffd740" font-size="9" font-family="monospace">GND_in</text>
+  <line x1="195" y1="100" x2="235" y2="100" stroke="#ff9800" stroke-width="1.5" stroke-dasharray="3"/>
+  <text x="215" y="92" fill="#ff9800" font-size="9" font-family="monospace">light</text>
+  <line x1="305" y1="35" x2="305" y2="65" stroke="#9fa8da" stroke-width="1.5"/>
+  <text x="305" y="30" fill="#9fa8da" text-anchor="middle" font-size="9" font-family="monospace">Vcc (3.3V)</text>
+  <rect x="275" y="65" width="30" height="20" rx="2" fill="#1c2038" stroke="#9fa8da" stroke-width="1"/>
+  <text x="290" y="79" fill="#9fa8da" text-anchor="middle" font-size="9" font-family="monospace">Rpu</text>
+  <line x1="305" y1="85" x2="305" y2="100" stroke="#9fa8da" stroke-width="1.5"/>
+  <circle cx="305" cy="108" r="12" fill="#1c2038" stroke="#00d4ff" stroke-width="1.5"/>
+  <text x="305" y="112" fill="#00d4ff" text-anchor="middle" font-size="9" font-family="monospace">Q</text>
+  <line x1="305" y1="120" x2="305" y2="165" stroke="#9fa8da" stroke-width="1.5"/>
+  <text x="305" y="180" fill="#ffd740" font-size="9" font-family="monospace" text-anchor="middle">GND_out</text>
+  <line x1="317" y1="108" x2="370" y2="108" stroke="#9fa8da" stroke-width="1.5"/>
+  <text x="372" y="112" fill="#00e676" font-size="9" font-family="monospace">Vout</text>
+  <text x="200" y="195" fill="#9fa8da" text-anchor="middle" font-size="9" font-family="monospace">LED OFF → Q OFF → Vout = Vcc (HIGH). LED ON → Q ON → Vout ≈ 0V (LOW)</text>
+</svg>`,
+
+scr:`<svg width="380" height="200" viewBox="0 0 380 200">
+  <text x="190" y="14" fill="#9fa8da" text-anchor="middle" font-size="10" font-family="monospace">SCR (Thyristor) — Controlled Rectifier</text>
+  <line x1="30" y1="100" x2="130" y2="100" stroke="#ffd740" stroke-width="2"/>
+  <text x="25" y="90" fill="#ffd740" font-size="9" font-family="monospace">Anode(A)</text>
+  <polygon points="130,90 130,110 160,100" fill="#7c6fff" stroke="#7c6fff"/>
+  <line x1="160" y1="90" x2="160" y2="110" stroke="#7c6fff" stroke-width="2"/>
+  <line x1="160" y1="100" x2="250" y2="100" stroke="#ffd740" stroke-width="2"/>
+  <text x="255" y="95" fill="#ffd740" font-size="9" font-family="monospace">Cathode(K)</text>
+  <line x1="160" y1="110" x2="160" y2="150" stroke="#00e676" stroke-width="1.5"/>
+  <text x="165" y="155" fill="#00e676" font-size="9" font-family="monospace">Gate(G) — trigger pulse</text>
+  <text x="190" y="175" fill="#9fa8da" text-anchor="middle" font-size="9" font-family="monospace">Trigger G → SCR turns ON | Stays ON until current drops below I_hold</text>
+  <text x="190" y="190" fill="#ff5252" text-anchor="middle" font-size="9" font-family="monospace">Can only turn OFF at AC zero-crossing (natural commutation)</text>
+</svg>`,
+
+thermal_model:`<svg width="380" height="180" viewBox="0 0 380 180">
+  <text x="190" y="14" fill="#9fa8da" text-anchor="middle" font-size="10" font-family="monospace">Thermal Model — Motor as RC circuit</text>
+  <line x1="30" y1="80" x2="80" y2="80" stroke="#ffd740" stroke-width="2"/>
+  <text x="20" y="75" fill="#ffd740" font-size="9" font-family="monospace">P_loss</text>
+  <text x="20" y="86" fill="#ffd740" font-size="9" font-family="monospace">(I²R)</text>
+  <circle cx="90" cy="80" r="14" fill="#1c2038" stroke="#ffd740" stroke-width="1.5"/>
+  <text x="90" y="75" fill="#ffd740" text-anchor="middle" font-size="9" font-family="monospace">I²</text>
+  <text x="90" y="88" fill="#ffd740" text-anchor="middle" font-size="9" font-family="monospace">src</text>
+  <line x1="104" y1="80" x2="155" y2="80" stroke="#9fa8da" stroke-width="2"/>
+  <rect x="155" y="65" width="40" height="30" rx="3" fill="#1c2038" stroke="#00d4ff" stroke-width="1.5"/>
+  <text x="175" y="83" fill="#00d4ff" text-anchor="middle" font-size="9" font-family="monospace">R_th</text>
+  <line x1="195" y1="80" x2="250" y2="80" stroke="#9fa8da" stroke-width="2"/>
+  <line x1="250" y1="60" x2="250" y2="100" stroke="#9fa8da" stroke-width="2"/>
+  <rect x="240" y="100" width="20" height="40" rx="2" fill="#1c2038" stroke="#00e676" stroke-width="1.5"/>
+  <text x="250" y="116" fill="#00e676" text-anchor="middle" font-size="8" font-family="monospace">C_th</text>
+  <text x="250" y="128" fill="#00e676" text-anchor="middle" font-size="8" font-family="monospace">(τ/R)</text>
+  <line x1="250" y1="140" x2="250" y2="155" stroke="#9fa8da" stroke-width="1.5"/>
+  <line x1="30" y1="155" x2="320" y2="155" stroke="#9fa8da" stroke-width="1.5"/>
+  <line x1="30" y1="80" x2="30" y2="155" stroke="#9fa8da" stroke-width="1.5"/>
+  <line x1="250" y1="80" x2="310" y2="80" stroke="#9fa8da" stroke-width="2"/>
+  <text x="315" y="83" fill="#ff6584" font-size="9" font-family="monospace">ΔT</text>
+  <text x="190" y="170" fill="#9fa8da" text-anchor="middle" font-size="9" font-family="monospace">τ_th = R_th × C_th | ΔT_final = P × R_th | T(t) = ΔT_∞(1−e^(−t/τ))</text>
+</svg>`,
+
+motion_profile:`<svg width="420" height="200" viewBox="0 0 420 200">
+  <text x="210" y="14" fill="#9fa8da" text-anchor="middle" font-size="10" font-family="monospace">Trapezoidal Velocity Profile</text>
+  <line x1="30" y1="170" x2="400" y2="170" stroke="#9fa8da" stroke-width="1"/>
+  <line x1="30" y1="170" x2="30" y2="20" stroke="#9fa8da" stroke-width="1"/>
+  <text x="15" y="170" fill="#9fa8da" font-size="9" font-family="monospace">0</text>
+  <text x="5" y="60" fill="#ffd740" font-size="9" font-family="monospace">v</text>
+  <text x="400" y="183" fill="#9fa8da" font-size="9" font-family="monospace">t</text>
+  <polyline points="30,170 110,50 230,50 310,170" fill="none" stroke="#00d4ff" stroke-width="2.5"/>
+  <line x1="110" y1="170" x2="110" y2="50" stroke="#7c6fff" stroke-width="1" stroke-dasharray="3"/>
+  <line x1="230" y1="170" x2="230" y2="50" stroke="#7c6fff" stroke-width="1" stroke-dasharray="3"/>
+  <line x1="310" y1="170" x2="310" y2="50" stroke="#7c6fff" stroke-width="1" stroke-dasharray="3"/>
+  <text x="70" y="185" fill="#00e676" font-size="9" font-family="monospace" text-anchor="middle">acc</text>
+  <text x="170" y="185" fill="#00e676" font-size="9" font-family="monospace" text-anchor="middle">const v</text>
+  <text x="270" y="185" fill="#00e676" font-size="9" font-family="monospace" text-anchor="middle">decel</text>
+  <text x="30" y="43" fill="#ffd740" font-size="9" font-family="monospace">v_max</text>
+  <line x1="30" y1="50" x2="110" y2="50" stroke="#ffd740" stroke-width="1" stroke-dasharray="2"/>
+  <text x="360" y="100" fill="#9fa8da" font-size="9" font-family="monospace">Optimal for</text>
+  <text x="360" y="112" fill="#9fa8da" font-size="9" font-family="monospace">min time!</text>
+</svg>`,
+
+dc_motor_circuit:`<svg width="400" height="180" viewBox="0 0 400 180">
+  <text x="200" y="14" fill="#9fa8da" text-anchor="middle" font-size="10" font-family="monospace">DC Motor Equivalent Circuit</text>
+  <line x1="20" y1="80" x2="60" y2="80" stroke="#9fa8da" stroke-width="2"/>
+  <text x="10" y="74" fill="#ffd740" font-size="9" font-family="monospace">V</text>
+  <circle cx="40" cy="110" r="12" fill="#1c2038" stroke="#ffd740" stroke-width="1.5"/>
+  <text x="40" y="114" fill="#ffd740" text-anchor="middle" font-size="9" font-family="monospace">V</text>
+  <line x1="40" y1="80" x2="40" y2="98" stroke="#ffd740" stroke-width="1.5"/>
+  <line x1="40" y1="122" x2="40" y2="155" stroke="#9fa8da" stroke-width="1.5"/>
+  <rect x="60" y="70" width="50" height="20" rx="3" fill="#1c2038" stroke="#7c6fff" stroke-width="1.5"/>
+  <text x="85" y="83" fill="#7c6fff" text-anchor="middle" font-size="9" font-family="monospace">R_r</text>
+  <line x1="110" y1="80" x2="155" y2="80" stroke="#9fa8da" stroke-width="2"/>
+  <rect x="155" y="65" width="15" height="30" rx="2" fill="#1c2038" stroke="#00d4ff" stroke-width="1.5"/>
+  <line x1="162" y1="65" x2="162" y2="55" stroke="#9fa8da" stroke-width="1.5"/>
+  <line x1="162" y1="95" x2="162" y2="80" stroke="#9fa8da" stroke-width="1.5"/>
+  <text x="175" y="83" fill="#00d4ff" font-size="9" font-family="monospace">L</text>
+  <line x1="170" y1="80" x2="220" y2="80" stroke="#9fa8da" stroke-width="2"/>
+  <circle cx="250" cy="80" r="20" fill="#1c2038" stroke="#00e676" stroke-width="2"/>
+  <text x="250" y="76" fill="#00e676" text-anchor="middle" font-size="9" font-family="monospace">E =</text>
+  <text x="250" y="88" fill="#00e676" text-anchor="middle" font-size="9" font-family="monospace">k·ω</text>
+  <line x1="270" y1="80" x2="370" y2="80" stroke="#9fa8da" stroke-width="2"/>
+  <line x1="370" y1="80" x2="370" y2="155" stroke="#9fa8da" stroke-width="2"/>
+  <line x1="40" y1="155" x2="370" y2="155" stroke="#9fa8da" stroke-width="2"/>
+  <text x="200" y="170" fill="#9fa8da" text-anchor="middle" font-size="9" font-family="monospace">V = I·R_r + L·dI/dt + E  |  T = k·I  |  ω = (V − I·R)/k</text>
+</svg>`,
+
+acs712:`<svg width="400" height="190" viewBox="0 0 400 190">
+  <text x="200" y="14" fill="#9fa8da" text-anchor="middle" font-size="10" font-family="monospace">ACS712 Hall Sensor — Datasheet Extract</text>
+  <rect x="20" y="25" width="360" height="120" rx="6" fill="#1c2038" stroke="#00d4ff" stroke-width="1"/>
+  <text x="200" y="42" fill="#00d4ff" text-anchor="middle" font-size="9" font-family="monospace" font-weight="bold">ACS712 (5A range)</text>
+  <line x1="40" y1="52" x2="360" y2="52" stroke="#2a2f52" stroke-width="1"/>
+  <text x="30" y="66" fill="#9fa8da" font-size="9" font-family="monospace">Supply voltage (Vcc):</text>
+  <text x="250" y="66" fill="#ffd740" font-size="9" font-family="monospace">5 V</text>
+  <text x="30" y="80" fill="#9fa8da" font-size="9" font-family="monospace">Sensitivity (Q_VOS):</text>
+  <text x="250" y="80" fill="#ffd740" font-size="9" font-family="monospace">185 mV/A  (±5A model)</text>
+  <text x="30" y="94" fill="#9fa8da" font-size="9" font-family="monospace">Zero-current output (V_ref):</text>
+  <text x="250" y="94" fill="#ffd740" font-size="9" font-family="monospace">Vcc/2 = 2.5 V</text>
+  <text x="30" y="108" fill="#9fa8da" font-size="9" font-family="monospace">Output formula:</text>
+  <text x="250" y="108" fill="#00e676" font-size="9" font-family="monospace">V_out = 2.5 + 0.185 × I</text>
+  <text x="30" y="122" fill="#9fa8da" font-size="9" font-family="monospace">Bandwidth:</text>
+  <text x="250" y="122" fill="#ffd740" font-size="9" font-family="monospace">80 kHz</text>
+  <text x="30" y="136" fill="#9fa8da" font-size="9" font-family="monospace">Isolation:</text>
+  <text x="250" y="136" fill="#ffd740" font-size="9" font-family="monospace">Yes (galvanic)</text>
+  <text x="200" y="175" fill="#9fa8da" text-anchor="middle" font-size="9" font-family="monospace">Example: I = +10A → V_out = 2.5 + 0.185×10 = 4.35V</text>
+  <text x="200" y="188" fill="#9fa8da" text-anchor="middle" font-size="9" font-family="monospace">Example: I = −5A → V_out = 2.5 + 0.185×(−5) = 1.575V</text>
+</svg>`,
+
+coax_ds:`<svg width="400" height="190" viewBox="0 0 400 190">
+  <text x="200" y="14" fill="#9fa8da" text-anchor="middle" font-size="10" font-family="monospace">Coaxial Cable — Datasheet Parameters</text>
+  <rect x="20" y="25" width="360" height="130" rx="6" fill="#1c2038" stroke="#00d4ff" stroke-width="1"/>
+  <text x="200" y="42" fill="#00d4ff" text-anchor="middle" font-size="9" font-family="monospace" font-weight="bold">RG-58 / SR-141 type 50Ω cable</text>
+  <line x1="40" y1="50" x2="360" y2="50" stroke="#2a2f52" stroke-width="1"/>
+  <text x="30" y="65" fill="#9fa8da" font-size="9" font-family="monospace">Impedance Z₀:</text>
+  <text x="250" y="65" fill="#ffd740" font-size="9" font-family="monospace">50 Ω</text>
+  <text x="30" y="80" fill="#9fa8da" font-size="9" font-family="monospace">Capacitance (C'):</text>
+  <text x="250" y="80" fill="#ffd740" font-size="9" font-family="monospace">66 pF/ft = 216 pF/m</text>
+  <text x="30" y="95" fill="#9fa8da" font-size="9" font-family="monospace">Velocity factor (VF):</text>
+  <text x="250" y="95" fill="#ffd740" font-size="9" font-family="monospace">0.66 (v_p = 0.66c)</text>
+  <text x="30" y="110" fill="#9fa8da" font-size="9" font-family="monospace">Prop. delay (t_d):</text>
+  <text x="250" y="110" fill="#ffd740" font-size="9" font-family="monospace">5.07 ns/m (= 1/v_p)</text>
+  <text x="30" y="125" fill="#9fa8da" font-size="9" font-family="monospace">Inductance L' = Z₀²×C':</text>
+  <text x="250" y="125" fill="#00e676" font-size="9" font-family="monospace">50²×216×10⁻¹² = 540 nH/m</text>
+  <text x="30" y="140" fill="#9fa8da" font-size="9" font-family="monospace">v_p = 1/√(L'C'):</text>
+  <text x="250" y="140" fill="#00e676" font-size="9" font-family="monospace">1/√(540n×216p) ≈ 1.98×10⁸ m/s</text>
+  <text x="200" y="170" fill="#9fa8da" text-anchor="middle" font-size="9" font-family="monospace">L' from datasheet: L' = Z₀² × C' = (50)² × 216×10⁻¹² = 540 nH/m</text>
+  <text x="200" y="183" fill="#ff6584" text-anchor="middle" font-size="9" font-family="monospace">Length from delay: ℓ = t_d / (1/v_p) = t_d × v_p</text>
+</svg>`,
+
+mosfet_graph:`<svg width="400" height="200" viewBox="0 0 400 200">
+  <text x="200" y="14" fill="#9fa8da" text-anchor="middle" font-size="10" font-family="monospace">MOSFET V_GS vs I_DS Characteristic</text>
+  <line x1="50" y1="170" x2="380" y2="170" stroke="#9fa8da" stroke-width="1.5"/>
+  <line x1="50" y1="170" x2="50" y2="20" stroke="#9fa8da" stroke-width="1.5"/>
+  <text x="385" y="173" fill="#9fa8da" font-size="9" font-family="monospace">Vgs(V)</text>
+  <text x="15" y="100" fill="#9fa8da" font-size="9" font-family="monospace">Ids</text>
+  <text x="15" y="112" fill="#9fa8da" font-size="9" font-family="monospace">(mA)</text>
+  <text x="50" y="185" fill="#9fa8da" font-size="9" font-family="monospace">0</text>
+  <text x="115" y="185" fill="#9fa8da" font-size="9" font-family="monospace">1</text>
+  <text x="165" y="185" fill="#9fa8da" font-size="9" font-family="monospace">2</text>
+  <text x="215" y="185" fill="#9fa8da" font-size="9" font-family="monospace">3</text>
+  <text x="265" y="185" fill="#9fa8da" font-size="9" font-family="monospace">4</text>
+  <text x="315" y="185" fill="#9fa8da" font-size="9" font-family="monospace">5</text>
+  <text x="38" y="170" fill="#9fa8da" font-size="8" font-family="monospace">0</text>
+  <text x="30" y="120" fill="#9fa8da" font-size="8" font-family="monospace">50</text>
+  <text x="23" y="70" fill="#9fa8da" font-size="8" font-family="monospace">100</text>
+  <text x="23" y="35" fill="#9fa8da" font-size="8" font-family="monospace">150</text>
+  <path d="M50,170 L170,170 Q190,168 220,130 Q250,80 280,45 L310,40 L380,40" fill="none" stroke="#00d4ff" stroke-width="2.5"/>
+  <line x1="170" y1="170" x2="170" y2="20" stroke="#ffd740" stroke-width="1" stroke-dasharray="3"/>
+  <text x="162" y="18" fill="#ffd740" font-size="9" font-family="monospace">V_th</text>
+  <line x1="280" y1="170" x2="280" y2="20" stroke="#ff6584" stroke-width="1" stroke-dasharray="3"/>
+  <text x="255" y="18" fill="#ff6584" font-size="9" font-family="monospace">saturation</text>
+  <text x="200" y="195" fill="#9fa8da" text-anchor="middle" font-size="9" font-family="monospace">V_th ≈ 1.2V (x-intercept) | Current flattens = saturation region</text>
+</svg>`,
+
+mosfet_char:`<svg width="420" height="230" viewBox="0 0 420 230">
+  <text x="210" y="13" fill="#9fa8da" text-anchor="middle" font-size="10" font-family="monospace">MOSFET Characterisation Circuit (Q14 type)</text>
+  <!-- PWM source -->
+  <rect x="10" y="80" width="40" height="30" rx="4" fill="#1c2038" stroke="#7c6fff" stroke-width="1.5"/>
+  <text x="30" y="91" fill="#7c6fff" text-anchor="middle" font-size="7" font-family="monospace">PWM</text>
+  <polyline points="13,99 19,99 19,86 25,86 25,99 31,99 31,86 37,86 37,99 43,99" fill="none" stroke="#7c6fff" stroke-width="1.2"/>
+  <!-- R series -->
+  <line x1="50" y1="95" x2="75" y2="95" stroke="#9fa8da" stroke-width="1.5"/>
+  <rect x="75" y="87" width="30" height="16" rx="2" fill="#1c2038" stroke="#9fa8da" stroke-width="1.2"/>
+  <text x="90" y="99" fill="#e8eaf6" text-anchor="middle" font-size="9" font-family="monospace">R</text>
+  <line x1="105" y1="95" x2="140" y2="95" stroke="#9fa8da" stroke-width="1.5"/>
+  <!-- RC node -->
+  <circle cx="140" cy="95" r="2.5" fill="#ffd740"/>
+  <!-- C to GND -->
+  <line x1="140" y1="95" x2="140" y2="130" stroke="#9fa8da" stroke-width="1.2"/>
+  <line x1="128" y1="130" x2="152" y2="130" stroke="#00d4ff" stroke-width="2"/>
+  <line x1="128" y1="135" x2="152" y2="135" stroke="#00d4ff" stroke-width="2"/>
+  <line x1="140" y1="135" x2="140" y2="150" stroke="#9fa8da" stroke-width="1.2"/>
+  <line x1="134" y1="150" x2="146" y2="150" stroke="#9fa8da" stroke-width="1"/>
+  <line x1="137" y1="153" x2="143" y2="153" stroke="#9fa8da" stroke-width=".8"/>
+  <text x="157" y="133" fill="#00d4ff" font-size="9" font-family="monospace">C</text>
+  <text x="107" y="89" fill="#ffd740" font-size="8" font-family="monospace">Vgate</text>
+  <!-- Wire to MOSFET gate -->
+  <line x1="140" y1="95" x2="210" y2="95" stroke="#ffd740" stroke-width="1.5"/>
+  <!-- MOSFET symbol (NMOS) -->
+  <!-- Body -->
+  <line x1="230" y1="60" x2="230" y2="170" stroke="#9fa8da" stroke-width="2.5"/>
+  <!-- Gate line -->
+  <line x1="210" y1="95" x2="222" y2="95" stroke="#ffd740" stroke-width="1.5"/>
+  <line x1="222" y1="68" x2="222" y2="122" stroke="#e8eaf6" stroke-width="2"/>
+  <!-- D/S connections -->
+  <line x1="230" y1="75" x2="260" y2="75" stroke="#9fa8da" stroke-width="1.5"/>
+  <text x="218" y="59" fill="#9fa8da" font-size="8" font-family="monospace">D</text>
+  <line x1="230" y1="115" x2="260" y2="115" stroke="#9fa8da" stroke-width="1.5"/>
+  <text x="218" y="130" fill="#9fa8da" font-size="8" font-family="monospace">S</text>
+  <text x="236" y="100" fill="#00e676" font-size="9" font-family="monospace">Q</text>
+  <text x="200" y="59" fill="#ffd740" font-size="8" font-family="monospace">G</text>
+  <!-- Arrows for channel -->
+  <line x1="230" y1="75" x2="230" y2="65" stroke="#9fa8da" stroke-width="1.5"/>
+  <line x1="230" y1="115" x2="230" y2="125" stroke="#9fa8da" stroke-width="1.5"/>
+  <polyline points="225,78 230,72 235,78" fill="none" stroke="#9fa8da" stroke-width="1"/>
+  <!-- R_sense 100Ω (drain to supply) -->
+  <line x1="260" y1="75" x2="290" y2="75" stroke="#9fa8da" stroke-width="1.5"/>
+  <rect x="290" y="67" width="35" height="16" rx="2" fill="#1c2038" stroke="#ff6584" stroke-width="1.2"/>
+  <text x="307" y="79" fill="#ff6584" text-anchor="middle" font-size="8" font-family="monospace">100Ω</text>
+  <line x1="325" y1="75" x2="360" y2="75" stroke="#9fa8da" stroke-width="1.5"/>
+  <!-- Vsupply -->
+  <text x="362" y="71" fill="#00e676" font-size="9" font-family="monospace">+Vs</text>
+  <!-- GND from source -->
+  <line x1="260" y1="115" x2="360" y2="115" stroke="#9fa8da" stroke-width="1.5"/>
+  <line x1="360" y1="75" x2="360" y2="115" stroke="#9fa8da" stroke-width="1.5"/>
+  <!-- Ids arrow -->
+  <line x1="275" y1="75" x2="275" y2="55" stroke="#00d4ff" stroke-width="1.2" stroke-dasharray="3"/>
+  <polygon points="272,60 275,50 278,60" fill="#00d4ff"/>
+  <text x="279" y="54" fill="#00d4ff" font-size="8" font-family="monospace">Ids</text>
+  <!-- GND triangle -->
+  <polygon points="354,120 360,120 357,127" fill="#9fa8da"/>
+  <!-- INA current meter -->
+  <circle cx="275" cy="130" r="10" fill="#1c2038" stroke="#ffd740" stroke-width="1.2"/>
+  <text x="275" y="134" fill="#ffd740" text-anchor="middle" font-size="8" font-family="monospace">A</text>
+  <line x1="260" y1="115" x2="265" y2="115" stroke="#9fa8da" stroke-width="1"/>
+  <line x1="265" y1="115" x2="265" y2="130" stroke="#9fa8da" stroke-width="1"/>
+  <line x1="265" y1="130" x2="265" y2="130" stroke="#9fa8da" stroke-width="1"/>
+  <text x="210" y="218" fill="#9fa8da" text-anchor="middle" font-size="9" font-family="monospace">RC converts PWM→DC Vgate = D×Vsupply → controls Vgs → measures Ids(Vgs)</text>
+</svg>`,
+
+zero_flux:`<svg width="420" height="220" viewBox="0 0 420 220">
+  <text x="210" y="13" fill="#9fa8da" text-anchor="middle" font-size="10" font-family="monospace">Zero-Flux (Closed-Loop) Hall Sensor — LEM Type</text>
+  <!-- Core outline (C-shape) -->
+  <rect x="60" y="40" width="180" height="140" rx="10" fill="none" stroke="#7c6fff" stroke-width="2"/>
+  <rect x="90" y="70" width="120" height="80" rx="6" fill="#0d0f1a" stroke="#0d0f1a"/>
+  <text x="150" y="118" fill="#7c6fff" text-anchor="middle" font-size="9" font-family="monospace">IRON CORE</text>
+  <!-- Air gap -->
+  <rect x="236" y="90" width="4" height="40" rx="0" fill="#0d0f1a"/>
+  <text x="248" y="113" fill="#ffd740" font-size="8" font-family="monospace">air gap</text>
+  <!-- Hall element in gap -->
+  <rect x="238" y="100" width="14" height="20" rx="2" fill="#1c2038" stroke="#00d4ff" stroke-width="1.5"/>
+  <text x="245" y="114" fill="#00d4ff" text-anchor="middle" font-size="7" font-family="monospace">V_H</text>
+  <!-- Primary conductor (I1, N1 turns) -->
+  <line x1="20" y1="110" x2="60" y2="110" stroke="#ffd740" stroke-width="3"/>
+  <text x="10" y="106" fill="#ffd740" font-size="9" font-family="monospace">I₁</text>
+  <text x="65" y="160" fill="#7c6fff" font-size="8" font-family="monospace">N₁ turns</text>
+  <!-- Simulate N1 winding loops on left side of core -->
+  <ellipse cx="70" cy="90" rx="5" ry="8" fill="none" stroke="#ffd740" stroke-width="1.2"/>
+  <ellipse cx="70" cy="105" rx="5" ry="8" fill="none" stroke="#ffd740" stroke-width="1.2"/>
+  <ellipse cx="70" cy="120" rx="5" ry="8" fill="none" stroke="#ffd740" stroke-width="1.2"/>
+  <line x1="60" y1="110" x2="60" y2="90" stroke="#ffd740" stroke-width="1"/>
+  <line x1="60" y1="130" x2="60" y2="170" stroke="#ffd740" stroke-width="1"/>
+  <line x1="60" y1="170" x2="20" y2="170" stroke="#ffd740" stroke-width="1"/>
+  <text x="10" y="175" fill="#ffd740" font-size="9" font-family="monospace">I₁</text>
+  <!-- Secondary winding N2 -->
+  <ellipse cx="200" cy="90" rx="5" ry="8" fill="none" stroke="#00e676" stroke-width="1.2"/>
+  <ellipse cx="200" cy="105" rx="5" ry="8" fill="none" stroke="#00e676" stroke-width="1.2"/>
+  <ellipse cx="200" cy="120" rx="5" ry="8" fill="none" stroke="#00e676" stroke-width="1.2"/>
+  <text x="185" y="160" fill="#00e676" font-size="8" font-family="monospace">N₂ turns</text>
+  <!-- Amplifier -->
+  <polygon points="270,95 270,130 300,112" fill="#1c2038" stroke="#9fa8da" stroke-width="1.5"/>
+  <text x="275" y="115" fill="#9fa8da" font-size="8" font-family="monospace">AMP</text>
+  <line x1="252" y1="110" x2="270" y2="110" stroke="#00d4ff" stroke-width="1.2"/>
+  <!-- From amp to secondary drive -->
+  <line x1="300" y1="112" x2="325" y2="112" stroke="#00e676" stroke-width="1.5"/>
+  <line x1="325" y1="112" x2="325" y2="80" stroke="#00e676" stroke-width="1.5"/>
+  <line x1="325" y1="80" x2="205" y2="80" stroke="#00e676" stroke-width="1.5"/>
+  <line x1="205" y1="80" x2="205" y2="85" stroke="#00e676" stroke-width="1.5"/>
+  <!-- Rm resistor and output -->
+  <line x1="325" y1="112" x2="360" y2="112" stroke="#9fa8da" stroke-width="1.5"/>
+  <rect x="360" y="104" width="30" height="16" rx="2" fill="#1c2038" stroke="#9fa8da" stroke-width="1.2"/>
+  <text x="375" y="116" fill="#e8eaf6" text-anchor="middle" font-size="8" font-family="monospace">Rm</text>
+  <line x1="390" y1="112" x2="410" y2="112" stroke="#9fa8da" stroke-width="1.5"/>
+  <text x="400" y="107" fill="#00e676" font-size="9" font-family="monospace">Vout</text>
+  <!-- GND -->
+  <line x1="325" y1="150" x2="325" y2="165" stroke="#9fa8da" stroke-width="1.2"/>
+  <line x1="325" y1="140" x2="325" y2="150" stroke="#9fa8da" stroke-width="1.2"/>
+  <polygon points="319,165 325,165 322,172" fill="#9fa8da"/>
+  <!-- Labels -->
+  <text x="210" y="205" fill="#9fa8da" text-anchor="middle" font-size="9" font-family="monospace">Condition: Φ=0 → N₁×I₁ = N₂×I₂ | V_out = (N₁/N₂)×I₁×R_m</text>
+</svg>`
+};
+
+// ─────────────────────────────────────────────
+// FLASHCARD DATA
+// ─────────────────────────────────────────────
+const FLASHCARDS = {
+t1:[
+  {f:"What is the N² rule?", b:"Inertia reflects through a gearbox by N²: $$J_{ref} = \\frac{J_{load}}{N^2}$$ Torque × N, speed ÷ N."},
+  {f:"Optimal gear ratio formula", b:"$$N_{opt} = \\sqrt{\\frac{J_{load}}{J_{motor}}}$$ At this ratio total inertia = $2J_{motor}$, maximising acceleration."},
+  {f:"Drive system chain", b:"Source → Power Converter → Motor → Transmission → Load"},
+  {f:"Closed loop vs open loop", b:"Closed loop uses sensor feedback to correct errors. Open loop has no correction (e.g. stepper without encoder)."},
+  {f:"Thermal steady-state formula", b:"$$\\Delta T = P \\cdot R_{th}$$ where $P_{cu} = I^2 R_r$. Units: W × °C/W = °C."},
+  {f:"Thermal transient formula", b:"$$T(t) = \\Delta T_\\infty \\left(1 - e^{-t/\\tau_{th}}\\right)$$ where $\\tau_{th} = R_{th} \\cdot C_{th}$"},
+  {f:"Convert RPM to rad/s", b:"$$\\omega = \\frac{n \\cdot 2\\pi}{60}$$ Example: 3000 RPM → 314 rad/s."},
+  {f:"Isolation class H means...", b:"Max temperature rise = 180°C. (Class F = 155°C, Class B = 130°C)"},
+],
+t2:[
+  {f:"Encoder quadrature resolution", b:"$$\\text{Resolution} = 4 \\times \\text{PPR}$$ Count all 4 edges (↑A, ↓A, ↑B, ↓B) per pulse cycle."},
+  {f:"How to detect rotation direction from encoder?", b:"A leads B → CW. B leads A → CCW. Z gives absolute reference (1 pulse/rev)."},
+  {f:"Thermocouple generates…", b:"A VOLTAGE (not current!) — Seebeck effect. ⚠️ Classic exam trap!"},
+  {f:"PTC thermistor behaviour", b:"Positive Temperature Coefficient: resistance INCREASES with temperature. Used in motor windings for protection."},
+  {f:"NTC thermistor behaviour", b:"Negative Temperature Coefficient: resistance DECREASES with temperature. Common in general temp sensing."},
+  {f:"ACS712 output formula", b:"$$V_{out} = V_{ref} + S \\cdot I$$ Example (5A model): $V_{out} = 2.5 + 0.185 \\cdot I$"},
+  {f:"LEM HO40: using Np=2 primary turns", b:"Doubles sensitivity, halves range. $$V_{out} = V_{ref} + S \\cdot \\frac{I}{N_p}$$"},
+  {f:"Accuracy vs Precision", b:"Accuracy = closeness to true value. Precision = repeatability (spread of measurements). Precise but inaccurate = systematic offset."},
+  {f:"Zero-flux (closed-loop) Hall sensor benefit", b:"Secondary winding cancels flux → much more accurate & linear than open-loop. Higher bandwidth."},
+  {f:"Current transformer: AC or DC?", b:"AC ONLY. Requires changing flux. DC produces constant flux → no induction → cannot measure DC."},
+],
+t3:[
+  {f:"DC motor back-EMF formula", b:"$$E = k \\cdot \\omega$$ Back-EMF opposes applied voltage. At standstill $\\omega=0 \\Rightarrow E=0$ → max current."},
+  {f:"DC motor torque formula", b:"$$T = k \\cdot I$$ Torque proportional to current. $k_t = k_e$ in SI units for ideal PM motor."},
+  {f:"DC motor speed equation (steady state)", b:"$$\\omega = \\frac{V - IR}{k}$$ No-load: $\\omega_0 = V/k$. Speed drops with load current."},
+  {f:"Electrical time constant τ_e", b:"$$\\tau_e = \\frac{L}{R}$$ How fast current responds to a voltage step. Typically 1–10 ms."},
+  {f:"Mechanical time constant τ_m", b:"$$\\tau_m = \\frac{J \\cdot R}{k^2}$$ How fast speed responds. Typically $\\tau_m \\gg \\tau_e$."},
+  {f:"Stepper motor: how many steps/rev?", b:"Full step: 200 steps/rev (1.8°/step). Half step: 400. Microstepping: up to 51200 or more."},
+  {f:"Stepper motor thermal problem", b:"Full holding current flows even when stationary → $I^2R$ losses → overheating. Reduce current when holding."},
+  {f:"BLDC vs DC brush motor", b:"BLDC: no brushes → longer life, better thermal (windings on stator), needs electronic commutation + position sensor. DC brush: simpler controller."},
+],
+t4:[
+  {f:"H-bridge forward mode", b:"Q1 (top-left) + Q4 (bottom-right) ON. Current: +V → Q1 → Motor → Q4 → GND."},
+  {f:"H-bridge reverse mode", b:"Q2 (top-right) + Q3 (bottom-left) ON. Current: +V → Q2 → Motor → Q3 → GND."},
+  {f:"H-bridge brake mode", b:"Q1+Q3 ON (or Q2+Q4). Motor terminals shorted → regenerative braking. Motor acts as generator."},
+  {f:"PWM average voltage", b:"$$V_{avg} = D \\cdot V_{dc}$$ D = duty cycle (0 to 1). 50% duty → $V_{dc}/2$ average."},
+  {f:"Purpose of inductor in H-bridge", b:"Smooths current ripple (low-pass filter for current). Does NOT limit peak current magnitude."},
+  {f:"RC low-pass filter on PWM→MOSFET gate", b:"Converts PWM to DC: $V_{DC} = D \\cdot V_{supply}$. Without it: MOSFET switches ON/OFF rapidly — no linear VGS-IDS curve."},
+  {f:"MOSFET threshold voltage V_th", b:"$V_{GS}$ at which drain current starts flowing. Read from VGS-IDS graph as the x-intercept (~1–4V)."},
+  {f:"PWM current ripple formula", b:"$$\\Delta I = \\frac{V_{dc} \\cdot D(1-D)}{L \\cdot f_{PWM}}$$ Larger $L$ or higher $f$ → less ripple."},
+],
+t5:[
+  {f:"SCR turn-ON", b:"Apply positive gate pulse while Anode > Cathode. Once triggered, gate has no control — SCR latches ON."},
+  {f:"SCR turn-OFF", b:"Current must drop below $I_{hold}$. In AC: happens naturally at zero-crossing. In DC: force commutation needed."},
+  {f:"Firing angle α — rectifier output", b:"$$V_{avg} = \\frac{V_{pk}}{2\\pi}(1+\\cos\\alpha)$$ α=0° → max. α=90° → ~half. α=180° → zero."},
+  {f:"TRIAC vs SCR", b:"TRIAC is bidirectional (both directions), SCR is unidirectional. Both need zero-crossing to turn OFF."},
+  {f:"EMC model: 3 parts", b:"Source → Coupling Path → Victim. Break ANY one link to solve the problem."},
+  {f:"Transmission line: when to consider?", b:"When $\\ell \\geq 0.1 \\times v_p \\times t_{rise}$ (10% rule). Spatial extent = $v_p \\cdot t_{rise}$."},
+  {f:"Characteristic impedance Z₀", b:"$$Z_0 = \\sqrt{\\frac{L'}{C'}}$$ RG-58: 50Ω. $L' = Z_0^2 \\cdot C'$"},
+  {f:"Reflection coefficient Γ", b:"$$\\Gamma = \\frac{Z_L - Z_0}{Z_L + Z_0}$$ Γ=0: matched. Γ=+1: open. Γ=−1: short."},
+  {f:"Skin effect", b:"Current near surface only. $$\\delta = \\sqrt{\\frac{2\\rho}{\\omega\\mu}}$$ Resistance $\\propto \\sqrt{f}$."},
+],
+t6:[
+  {f:"NPN BJT switch: saturate condition", b:"Need I_B ≥ I_C / β_min. R_B = (V_in − V_BE) / I_B. V_BE ≈ 0.7V. Over-drive factor ≥ 2× for reliable saturation."},
+  {f:"N-MOSFET as switch", b:"ON when V_GS > V_th. Best as low-side switch (source to GND). For high-side, need bootstrap or gate driver."},
+  {f:"Optocoupler output when input=0V", b:"LED OFF → phototransistor OFF → output pulled HIGH to supply voltage via pull-up resistor. Output = V_cc (inverted!)."},
+  {f:"SSR with TRIAC: AC or DC?", b:"AC ONLY. TRIAC needs zero-crossing to turn OFF, which only exists in AC. For DC loads, use MOSFET-output SSR."},
+  {f:"Digital output source mode vs sink mode", b:"Source mode: output sources current (output HIGH, load to GND). Sink mode: output sinks current (output LOW, load to V+)."},
+  {f:"Schmitt trigger key feature", b:"Two switching thresholds (hysteresis): V_upper for rising input, V_lower for falling. Prevents chattering at threshold."},
+  {f:"Purpose of clamping diodes on MCU input", b:"Clamp input voltage to [GND, Vcc] range. Protect MCU from voltage spikes above Vcc or below GND."},
+],
+t7:[
+  {f:"Trapezoidal profile: 3 phases", b:"1. Constant acceleration $+a_{max}$. 2. Constant velocity $v_{max}$. 3. Deceleration $-a_{max}$. Time-optimal!"},
+  {f:"PID: what does integral term do?", b:"Eliminates steady-state error. Accumulates error over time → output grows until error = 0."},
+  {f:"PID: what does derivative term do?", b:"Predicts future error (rate of change). Damps oscillations. Amplifies noise → often low-pass filtered."},
+  {f:"Speed feedforward: does it improve stability?", b:"NO. Feedforward is open-loop → does NOT affect stability. Reduces tracking error during motion."},
+  {f:"Cascaded control loop order (innermost first)", b:"1. Current/Torque (~1–5 kHz). 2. Velocity (~100–500 Hz). 3. Position (~10–50 Hz). Each inner loop 3–10× faster."},
+  {f:"Regenerative braking: does motor heat up?", b:"YES. Energy goes back to supply, but $I^2R$ losses in rotor still generate heat."},
+  {f:"S-curve vs trapezoidal profile", b:"S-curve limits jerk ($da/dt$) → smoother, less vibration, but slower. Trapezoidal = time-optimal."},
+  {f:"Thermal: time to reach ΔT from cold", b:"$$t = -\\tau_{th} \\cdot \\ln\\!\\left(1 - \\frac{\\Delta T}{\\Delta T_\\infty}\\right)$$ where $\\Delta T_\\infty = I^2 R_r R_{th}$"},
+]
+};
+
+// ─────────────────────────────────────────────
+// QUESTION BANK  (type: mc | calc | diag)
+// svg: key from SVG{} above, shown above options
+// ─────────────────────────────────────────────
+const QB = {
+t1:[
+  {id:'t1q1',src:'2023',n:5,type:'mc',
+   text:'Statement 1: A drive system based on pneumatics is interesting from a safety perspective in overload situations as air is compressible. The compressibility of air becomes a disadvantage for accurate positioning.\nStatement 2: Electrical drive systems are often used because the efficiency of energy conversion is higher compared to pneumatic and hydraulic drive systems.',
+   opts:['Statements 1 and 2 are both correct','Statements 1 and 2 are both incorrect','Only statement 2 is correct, statement 1 is incorrect','Only statement 1 is correct, statement 2 is incorrect'],
+   ans:0,
+   exp:'<strong>Answer: (a)</strong> — Both TRUE. Pneumatics: air compressibility is a safety buffer under overload (system "gives") but makes precise positioning difficult. Electrical drives are ~85–95% efficient vs ~50–70% for hydraulics/pneumatics.'},
+  {id:'t1q2',src:'Practice',n:'P1',type:'calc',
+   text:'A motor has J_motor = 0.01 kg·m². The load has J_load = 0.09 kg·m². What is the optimal gear ratio N_opt?',
+   opts:['N = 1','N = 3','N = 9','N = √0.09'],
+   ans:1,
+   exp:'<strong>Answer: (b) N = 3</strong> — N_opt = √(J_load/J_motor) = √(0.09/0.01) = √9 = 3.',
+   steps:[
+     {n:'Formula',f:'N_opt = √(J_load / J_motor)'},
+     {n:'Substitute',f:'N_opt = √(0.09 / 0.01) = √9'},
+     {n:'Result',f:'N_opt = 3'},
+   ]},
+  {id:'t1q3',src:'Practice',n:'P2',type:'calc',
+   text:'A motor produces T_motor = 2 Nm. After a gearbox with N = 5 (η = 0.9), what is the output torque at the load?',
+   opts:['2.0 Nm','9.0 Nm','10.0 Nm','0.4 Nm'],
+   ans:1,
+   exp:'<strong>Answer: (b) 9.0 Nm</strong> — T_load = T_motor × N × η = 2 × 5 × 0.9 = 9 Nm.',
+   steps:[
+     {n:'Formula',f:'T_load = T_motor × N × η'},
+     {n:'Substitute',f:'T_load = 2 × 5 × 0.9'},
+     {n:'Result',f:'T_load = 9.0 Nm'},
+   ]},
+  {id:'t1q4',src:'Practice',n:'P3',type:'calc',
+   text:'A motor runs at 3000 RPM. What is the angular velocity in rad/s?',
+   opts:['50 rad/s','157 rad/s','314 rad/s','3000 rad/s'],
+   ans:2,
+   exp:'<strong>Answer: (c) 314 rad/s</strong> — ω = n × 2π/60 = 3000 × 2π/60 = 3000 × 0.1047 = 314.2 rad/s.',
+   steps:[
+     {n:'Formula',f:'ω = n × 2π / 60'},
+     {n:'Substitute',f:'ω = 3000 × 2π / 60'},
+     {n:'Result',f:'ω ≈ 314 rad/s'},
+   ]},
+  {id:'t1q5',src:'Practice',n:'P4',type:'mc',
+   text:'A motor produces 500 W of mechanical power at 1000 RPM. What is the torque?',
+   opts:['0.5 Nm','4.77 Nm','31.4 Nm','500 Nm'],
+   ans:1,
+   exp:'<strong>Answer: (b) 4.77 Nm</strong> — ω = 1000×2π/60 = 104.7 rad/s. T = P/ω = 500/104.7 ≈ 4.77 Nm.',
+   steps:[
+     {n:'Convert RPM',f:'ω = 1000 × 2π/60 = 104.7 rad/s'},
+     {n:'T = P/ω',f:'T = 500 / 104.7 ≈ 4.77 Nm'},
+   ]},
+  {id:'t1q6',src:'Practice',n:'P5',type:'calc',
+   text:'A motor has J_motor = 0.001 kg·m² and drives a load with J_load = 0.009 kg·m² through a gearbox. What is the optimal gear ratio N_opt for maximum acceleration?',
+   opts:['3','9','0.33','81'],
+   ans:0,
+   exp:'<strong>Answer: (a) N_opt = 3</strong> — N_opt = √(J_load / J_motor) = √(0.009 / 0.001) = √9 = 3. At N_opt the reflected load inertia equals the motor inertia, giving maximum acceleration.',
+   steps:[
+     {n:'Formula',f:'N_opt = √(J_load / J_motor)'},
+     {n:'Substitute',f:'N_opt = √(0.009 / 0.001) = √9'},
+     {n:'Result',f:'N_opt = 3'},
+   ]},
+  {id:'t1open1',src:'Practice',n:'Open-1',type:'open',subtype:'number',
+   text:'A motor (J_motor = 0.001 kg·m²) drives a load with J_load = 0.016 kg·m² through a gearbox with N = 4. Calculate the reflected inertia J_ref seen at the motor shaft.',
+   ans_val:0.001, unit:'kg·m²', tolerance:0.05,
+   steps:[{n:'N² rule',f:'J_ref = J_load / N²'},{n:'Substitute',f:'J_ref = 0.016 / 4² = 0.016/16'},{n:'Result',f:'J_ref = 0.001 kg·m²'}],
+   explanation:'J_ref = J_load/N² = 0.016/16 = <strong>0.001 kg·m²</strong>. The load inertia is reduced 16× at the motor shaft. Compare to J_motor=0.001: they are equal — this is exactly the optimal gear ratio N_opt = 4!'},
+  {id:'t1q7',src:'2023',n:'P1',type:'mc',
+   text:'Statement 1: Using a gearbox always improves the efficiency of the drive system.\nStatement 2: At the optimal gear ratio, the reflected load inertia equals the motor inertia.',
+   opts:[
+     'Statements 1 and 2 are both correct.',
+     'Only statement 2 is correct, statement 1 is incorrect.',
+     'Only statement 1 is correct, statement 2 is incorrect.',
+     'Statements 1 and 2 are both incorrect.',
+   ],
+   ans:1,
+   exp:'<strong>Answer: (b)</strong> — Statement 1 FALSE: a gearbox introduces friction losses (η < 1), which reduces efficiency. Statement 2 TRUE: at N_opt = √(J_load/J_motor), J_ref = J_load/N² = J_motor. This halves the total inertia at the motor shaft vs. direct drive.'},
+],
+
+t2:[
+  {id:'t2q1',src:'2024',n:1,type:'diag',svg:'encoder_waves',
+   text:'An optical incremental encoder is shown above. Which statement correctly describes its operating principle?',
+   opts:[
+     'The LED beam is directly detected by a photosensor, producing a digital signal. An absolute counter tracks position.',
+     'Two gratings with slightly different pitches create Moiré fringes. Two detectors 90° apart produce SIN/COS signals for position tracking.',
+     'By varying the LED wavelength, resolution is adjusted. Shorter wavelength = higher resolution.',
+     'The linear configuration uses the same principle as the rotary type with one LED and two photodetectors at an offset.',
+   ],
+   ans:1,
+   exp:'<strong>Answer: (b)</strong> — High-precision optical encoders use the Moiré fringe principle. Two slightly-offset gratings create sinusoidal fringe patterns. A second detector at 90° produces the quadrature signal needed to detect position AND direction.'},
+  {id:'t2q2',src:'2024',n:2,type:'diag',svg:'encoder_waves',
+   text:'An encoder produces 50 pulses per revolution on channels A and B. Which statement is NOT correct?',
+   opts:[
+     'Position can be determined from A, B and Z signals combined.',
+     'Only speed — but NOT direction — can be determined from A and B (without Z).',
+     'Maximum resolution of this encoder is 200 positions per revolution.',
+     'This is an incremental encoder.',
+   ],
+   ans:1,
+   exp:'<strong>Answer: (b) — this is NOT correct.</strong> With A and B in quadrature, you CAN determine direction: A leads B = CW, B leads A = CCW. Z is not needed for direction. Resolution = 4 × 50 = 200 positions/rev.'},
+  {id:'t2q3',src:'2024',n:3,type:'mc',
+   text:'Statement 1: To measure motor temperature accurately, a PTC thermistor can be applied.\nStatement 2: A thermocouple generates a current which depends on temperature.',
+   opts:[
+     'Only statement 1 is correct, statement 2 is incorrect.',
+     'Statements 1 and 2 are both correct.',
+     'Only statement 2 is correct, statement 1 is incorrect.',
+     'Statements 1 and 2 are both incorrect.',
+   ],
+   ans:0,
+   exp:'<strong>Answer: (a)</strong> — PTC thermistors are routinely embedded in motor windings for over-temperature protection (TRUE). A thermocouple generates a <em>voltage</em> (Seebeck effect), NOT a current (FALSE). Common exam trap!'},
+  {id:'t2q4',src:'2024',n:4,type:'diag',svg:'hall_sensor',
+   text:'A current measurement setup with a Hall sensor is shown. Which statement best describes its operating principle?',
+   opts:[
+     'A current flowing through the Hall element will cause a voltage across it under the influence of a magnetic field.',
+     'A voltage across the Hall element will cause a current through it under the influence of a magnetic field.',
+     'The Hall element induces a voltage under the influence of a magnetic field alone.',
+     'The Hall element induces a current under the influence of a magnetic field alone.',
+   ],
+   ans:0,
+   exp:'<strong>Answer: (a)</strong> — Hall effect: control current flows through the Hall element. The magnetic field (from the measured conductor) deflects charge carriers sideways → Hall voltage V_H = (I×B)/(n·e·d) perpendicular to both current and field.'},
+  {id:'t2q5',src:'2023',n:3,type:'mc',
+   text:'A zero-flux transformer (closed-loop Hall sensor) is shown. Which statement is NOT correct?',
+   opts:[
+     'The voltage generated in the air gap is amplified and converted into a current through secondary coil N₂.',
+     'If flux = 0: N₁×I₁ = N₂×I₂.',
+     'If flux = 0: R×I₂ = (N₁/N₂)×I₁×R.',
+     'If flux = 0: N₁×I₁ < N₂×I₂.',
+   ],
+   ans:3,
+   exp:'<strong>Answer: (d) — NOT correct.</strong> When the flux is zero (balanced condition), N₁×I₁ = N₂×I₂ exactly (equal, not less than). The closed-loop sensor drives the secondary until ampere-turns are balanced.'},
+  {id:'t2q6',src:'Practice',n:'P1',type:'diag',svg:'acs712',
+   text:'Using the ACS712 datasheet shown, what is V_out when measuring a current of +10 A? (5A model, Vcc = 5V, sensitivity = 185 mV/A, V_ref = 2.5V)',
+   opts:['2.5 V','3.35 V','4.35 V','5.0 V'],
+   ans:2,
+   exp:'<strong>Answer: (c) 4.35 V</strong> — V_out = V_ref + S×I = 2.5 + 0.185×10 = 2.5 + 1.85 = 4.35 V.',
+   steps:[
+     {n:'Formula from datasheet',f:'V_out = V_ref + Sensitivity × I'},
+     {n:'Substitute values',f:'V_out = 2.5 + 0.185 × 10'},
+     {n:'Result',f:'V_out = 4.35 V'},
+   ]},
+  {id:'t2q7',src:'Practice',n:'P2',type:'mc',
+   text:'What is the maximum resolution (in positions per revolution) of an encoder with 1000 PPR using quadrature decoding?',
+   opts:['500','1000','2000','4000'],
+   ans:3,
+   exp:'<strong>Answer: (d) 4000</strong> — Quadrature decoding counts all 4 edges (rising A, falling A, rising B, falling B) per pulse cycle. Resolution = 4 × PPR = 4 × 1000 = 4000 positions/revolution.'},
+  {id:'t2q8',src:'Practice',n:'P3',type:'mc',
+   text:'Which sensor type CANNOT measure DC currents?',
+   opts:['Shunt resistor','Hall-effect sensor (ACS712)','AC current transformer','LEM closed-loop sensor (HO40)'],
+   ans:2,
+   exp:'<strong>Answer: (c) AC current transformer</strong> — A current transformer works on transformer (induction) principle: it requires a changing magnetic flux. DC produces constant flux → no induced voltage → no measurement.'},
+],
+
+t3:[
+  {id:'t3q1',src:'2024',n:5,type:'mc',
+   text:'Benefits: (+) Small torque ripple, (+) Overload resistant, (+) Inexpensive controller. Drawback: (−) Poor thermal performance. Which motor is this?',
+   opts:['Brushless DC motor (BLDC)','Synchronous reluctance motor (syncRM)','Stepper motor','DC motor with brushes'],
+   ans:2,
+   exp:'<strong>Answer: (c) Stepper motor</strong> — All characteristics match: low torque ripple (microstepping), resistant to overload (just misses steps), simple open-loop driver. The fatal flaw: full current flows when stationary → very poor thermal efficiency.'},
+  {id:'t3q2',src:'Practice',n:'P1',type:'diag',svg:'dc_motor_circuit',
+   text:'A DC motor has V=12V, R_r=2Ω, k=0.1 V·s/rad. At no-load (I≈0), what is the no-load speed ω₀?',
+   opts:['6 rad/s','60 rad/s','120 rad/s','1200 rad/s'],
+   ans:2,
+   exp:'<strong>Answer: (c) 120 rad/s</strong> — At no-load, I≈0, so ω₀ = V/k = 12/0.1 = 120 rad/s.',
+   steps:[
+     {n:'No-load condition: I≈0',f:'ω₀ = V / k'},
+     {n:'Substitute',f:'ω₀ = 12 / 0.1'},
+     {n:'Result',f:'ω₀ = 120 rad/s ≈ 1146 RPM'},
+   ]},
+  {id:'t3q3',src:'Practice',n:'P2',type:'calc',
+   text:'A DC motor: V=24V, R=3Ω, k=0.08 V·s/rad. Under a load, I=4A. What is the motor speed?',
+   opts:['200 rad/s','250 rad/s','150 rad/s','300 rad/s'],
+   ans:2,
+   exp:'<strong>Answer: (c) 150 rad/s</strong> — ω = (V − I×R)/k = (24 − 4×3)/0.08 = (24−12)/0.08 = 12/0.08 = 150 rad/s.',
+   steps:[
+     {n:'Formula',f:'ω = (V − I×R) / k'},
+     {n:'Substitute',f:'ω = (24 − 4×3) / 0.08 = 12 / 0.08'},
+     {n:'Result',f:'ω = 150 rad/s'},
+   ]},
+  {id:'t3q4',src:'Practice',n:'P3',type:'calc',
+   text:'A stepper motor has 200 full steps per revolution. What is the step angle?',
+   opts:['0.9°','1.8°','3.6°','7.2°'],
+   ans:1,
+   exp:'<strong>Answer: (b) 1.8°</strong> — θ_step = 360° / N_steps = 360° / 200 = 1.8° per step.',
+   steps:[
+     {n:'Formula',f:'θ = 360° / N_steps'},
+     {n:'Substitute',f:'θ = 360° / 200'},
+     {n:'Result',f:'θ = 1.8° per step'},
+   ]},
+  {id:'t3q5',src:'Practice',n:'P4',type:'mc',
+   text:'What is the electrical time constant τ_e of a motor with L=10mH and R=2Ω?',
+   opts:['0.2 ms','5 ms','20 ms','200 ms'],
+   ans:1,
+   exp:'<strong>Answer: (b) 5 ms</strong> — τ_e = L/R = 10×10⁻³ / 2 = 5×10⁻³ s = 5 ms.',
+   steps:[
+     {n:'Formula',f:'τ_e = L / R'},
+     {n:'Substitute',f:'τ_e = 10×10⁻³ / 2'},
+     {n:'Result',f:'τ_e = 5 ms'},
+   ]},
+  {id:'t3q6',src:'Practice',n:'P5',type:'calc',
+   text:'A DC motor: V=12V, R=2Ω, k=0.5 Nm/A (= V·s/rad). What is the stall torque T_stall (at ω = 0, i.e. motor locked)?',
+   opts:['3 Nm','6 Nm','24 Nm','0.25 Nm'],
+   ans:0,
+   exp:'<strong>Answer: (a) 3 Nm</strong> — At stall ω=0, so back-EMF E=k×ω=0. All voltage drives current: I_stall = V/R = 12/2 = 6A. Stall torque T = k × I_stall = 0.5 × 6 = 3 Nm.',
+   steps:[
+     {n:'At stall: E = 0',f:'I_stall = V / R = 12 / 2 = 6 A'},
+     {n:'Torque formula',f:'T_stall = k × I_stall = 0.5 × 6'},
+     {n:'Result',f:'T_stall = 3 Nm'},
+   ]},
+  {id:'t3open1',src:'Practice',n:'Open-1',type:'open',subtype:'number',
+   text:'DC motor: V = 24V, R_r = 2Ω, k = 0.15 V·s/rad. Under load the motor draws I = 3A. Calculate the angular velocity ω in rad/s.',
+   ans_val:120, unit:'rad/s', tolerance:0.05,
+   steps:[{n:'Formula',f:'ω = (V − I×R) / k'},{n:'Substitute',f:'ω = (24 − 3×2) / 0.15 = 18/0.15'},{n:'Result',f:'ω = 120 rad/s'}],
+   explanation:'ω = (V − I·R)/k = (24 − 6)/0.15 = <strong>120 rad/s</strong> ≈ 1146 RPM.'},
+  {id:'t3q7',src:'Practice',n:'P6',type:'mc',
+   text:'A BLDC motor requires Hall sensors or an encoder for normal operation. What does this tell you about BLDC control vs a simple DC brush motor?',
+   opts:[
+     'BLDC is harder to control — it requires electronic commutation based on rotor position feedback.',
+     'BLDC is easier to control because it has no brushes.',
+     'Both motors need the same control complexity.',
+     'BLDC can operate open-loop without any position feedback.',
+   ],
+   ans:0,
+   exp:'<strong>Answer: (a)</strong> — A brush DC motor self-commutates mechanically via brushes and commutator. A BLDC motor has no brushes — commutation must be done electronically (6-step or FOC). This requires knowing the rotor position at all times, hence Hall sensors or encoder are mandatory.'},
+],
+
+t4:[
+  {id:'t4q1',src:'2024',n:6,type:'diag',svg:'hbridge',
+   text:'The circuit shows a DC motor in an H-bridge. What is the purpose of inductor L1 in series with the motor?',
+   opts:[
+     'To smoothen the voltage across the motor (low-pass filter for voltage).',
+     'To limit the peak current through the motor (current limiter).',
+     'To smoothen the current through the motor (low-pass filter for current).',
+     'None of the above.',
+   ],
+   ans:2,
+   exp:'<strong>Answer: (c)</strong> — The inductor is a low-pass filter for CURRENT. PWM creates a pulsating voltage, but L opposes rapid current changes: ΔI = V×Δt/L. Higher L → smoother current → smoother torque. It does not "limit" current magnitude.'},
+  {id:'t4q2',src:'Practice',n:'P1',type:'mc',
+   text:'An H-bridge is powered by 24V DC. The PWM duty cycle is 75%. What is the average voltage across the motor?',
+   opts:['6 V','12 V','18 V','24 V'],
+   ans:2,
+   exp:'<strong>Answer: (c) 18 V</strong> — V_avg = D × V_dc = 0.75 × 24 = 18 V.',
+   steps:[
+     {n:'Formula',f:'V_avg = D × V_dc'},
+     {n:'Substitute',f:'V_avg = 0.75 × 24'},
+     {n:'Result',f:'V_avg = 18 V'},
+   ]},
+  {id:'t4q3',src:'Practice',n:'P2',type:'mc',
+   text:'In an H-bridge, Q1 (top-left) and Q3 (bottom-left) are both ON at the same time. What mode is this?',
+   opts:['Forward rotation','Reverse rotation','Regenerative braking (motor shorted)','Coast / free-wheel'],
+   ans:2,
+   exp:'<strong>Answer: (c) Regenerative braking</strong> — Both switches on the same side conduct, shorting the motor terminals together. Current recirculates through the motor and switches. The motor acts as a generator and decelerates.'},
+  {id:'t4q4',src:'2024',n:14,type:'diag',svg:'mosfet_graph',
+   text:'From the VGS–IDS graph shown, a MOSFET is being characterised. The current starts rising at approximately VGS = 1.2V. What does this value represent?',
+   opts:['The saturation voltage V_sat','The threshold voltage V_th','The breakdown voltage','The pinch-off voltage'],
+   ans:1,
+   exp:'<strong>Answer: (b) Threshold voltage V_th ≈ 1.2V</strong> — V_th is the gate-source voltage at which the channel begins to form and drain current starts flowing. It is read from the VGS-IDS graph as the x-intercept of the rising curve.'},
+  {id:'t4q5',src:'2024',n:14,type:'mc',
+   text:'In the MOSFET characterisation circuit, a PWM signal drives the MOSFET gate through an RC low-pass filter. What happens if the RC filter is LEFT OUT?',
+   opts:[
+     'The MOSFET gate receives the DC average of the PWM → same result, RC is unnecessary.',
+     'The MOSFET rapidly switches ON and OFF with the PWM frequency instead of operating in the linear region → the IDS measurement shows only two states (0 or I_sat), not the smooth VGS-IDS curve.',
+     'The measurement is more accurate without the RC filter.',
+     'The MOSFET is destroyed immediately.',
+   ],
+   ans:1,
+   exp:'<strong>Answer: (b)</strong> — Without RC, the gate sees a square wave. The MOSFET switches between fully-OFF and fully-ON, giving no useful VGS-IDS characteristic. The RC filter converts PWM duty cycle D into an analog DC voltage D×V_dc, allowing the MOSFET to operate in its linear region.'},
+  {id:'t4q6',src:'Practice',n:'P3',type:'mc',
+   text:'Why does I_DS flatten/saturate at high VGS in the MOSFET characteristic curve?',
+   opts:[
+     'The MOSFET is damaged by high gate voltage.',
+     'The MOSFET enters the ohmic region where current is limited by VDS.',
+     'The MOSFET enters saturation — IDS is controlled by VGS, not VDS. Current is limited by the external circuit (supply voltage / series resistance).',
+     'The threshold voltage increases at high VGS.',
+   ],
+   ans:2,
+   exp:'<strong>Answer: (c)</strong> — Once VGS is high enough, the MOSFET is in the saturation region. IDS is determined by the external circuit (V_supply/R_sense). Further increase of VGS has little effect on IDS in this region.'},
+  {id:'t4open1',src:'2024',n:'14a',type:'open',subtype:'text',svg:'mosfet_char',
+   text:'[2024 Exam Q14a] The circuit above uses an RC low-pass filter (R and C) between the PWM generator and the MOSFET gate.\n\nExplain the function of the RC filter. Why is it needed for this measurement?',
+   keywords:['dc','duty cycle','analog','average','linear','vgs','stable','convert','smooth','low pass','voltage'],
+   minKeywords:3,
+   ans_text:'The RC filter converts the PWM square wave into a steady DC analog voltage: V_gate = D × V_supply. The duty cycle D controls the DC voltage at the gate, giving a stable Vgs. This is needed because the MOSFET must operate in its linear/active region — you need a controlled, constant Vgs to measure the corresponding steady-state Ids and plot the VGS-IDS characteristic.',
+   explanation:'Key concepts: (1) RC converts PWM → DC average voltage D×Vsupply. (2) Provides stable Vgs for measurement. (3) Allows MOSFET to operate in linear region rather than switching.'},
+  {id:'t4open2',src:'2024',n:'14b',type:'open',subtype:'text',svg:'mosfet_char',
+   text:'[2024 Exam Q14b] What would happen to the Ids measurement if the RC low-pass filter was LEFT OUT? What would the resulting measurement look like?',
+   keywords:['switch','square wave','pwm','two states','fully on','fully off','binary','on and off','no curve','rapidly'],
+   minKeywords:2,
+   ans_text:'Without the RC filter, the MOSFET gate directly sees the PWM square wave. The MOSFET rapidly switches between fully OFF (Ids≈0) and fully ON (Ids=Isat) at the PWM frequency. The measurement shows only two discrete current levels — no smooth VGS-IDS curve. No useful characteristic can be obtained.',
+   explanation:'Key concepts: (1) Gate sees square wave → MOSFET is either fully OFF or fully ON. (2) Two discrete Ids values only — 0 or Isat. (3) No linear region operation — VGS-IDS characteristic cannot be measured.'},
+],
+
+t5:[
+  {id:'t5q1',src:'2024',n:12,type:'mc',
+   text:'Transmission line: 5cm long, clock 5MHz, transition time 0.5ns. Which statement is true?',
+   opts:[
+     'Below 10 MHz — no TL effects needed.',
+     'Rising edge < 1% of period — TL effects not needed.',
+     'Frequency > 1 MHz — always consider TL effects.',
+     'Consider TL effects when cable length ≥ 10% of spatial extent of the edge (based on t_rise and v_p).',
+   ],
+   ans:3,
+   exp:'<strong>Answer: (d)</strong> — Spatial extent = v_p × t_rise = (0.66×3×10⁸) × 0.5×10⁻⁹ = 0.099m ≈ 10cm. 10% of 10cm = 1cm. Cable = 5cm > 1cm → TL effects MUST be considered. Rule: ℓ ≥ 0.1 × v_p × t_rise.'},
+  {id:'t5q2',src:'Practice',n:'P1',type:'diag',svg:'coax_ds',
+   text:'Using the coaxial cable datasheet shown (C\' = 216 pF/m, Z₀ = 50Ω), calculate the inductance per meter L\'.',
+   opts:['108 nH/m','270 nH/m','540 nH/m','2160 nH/m'],
+   ans:2,
+   exp:'<strong>Answer: (c) 540 nH/m</strong> — L\' = Z₀² × C\' = 50² × 216×10⁻¹² = 2500 × 216×10⁻¹² = 540×10⁻⁹ H/m = 540 nH/m.',
+   steps:[
+     {n:'From Z₀ = √(L\'/C\')',f:'L\' = Z₀² × C\''},
+     {n:'Substitute',f:'L\' = 50² × 216×10⁻¹² = 2500 × 216 pF/m'},
+     {n:'Result',f:'L\' = 540 nH/m'},
+   ]},
+  {id:'t5q3',src:'Practice',n:'P2',type:'calc',
+   text:'A coaxial cable has a propagation delay t_d = 10 ns and velocity factor 0.66 (v_p = 1.98×10⁸ m/s). What is the cable length?',
+   opts:['0.5 m','1.0 m','1.98 m','3.0 m'],
+   ans:2,
+   exp:'<strong>Answer: (c) 1.98 m</strong> — ℓ = v_p × t_d = 1.98×10⁸ × 10×10⁻⁹ = 1.98 m.',
+   steps:[
+     {n:'Formula',f:'ℓ = v_p × t_d'},
+     {n:'Substitute',f:'ℓ = 1.98×10⁸ × 10×10⁻⁹'},
+     {n:'Result',f:'ℓ = 1.98 m'},
+   ]},
+  {id:'t5q4',src:'Practice',n:'P3',type:'mc',
+   text:'A load of R_L = 150Ω is connected to a 50Ω coaxial cable. What is the reflection coefficient Γ?',
+   opts:['0','0.5','0.67','−0.5'],
+   ans:1,
+   exp:'<strong>Answer: (b) 0.5</strong> — Γ = (Z_L − Z₀)/(Z_L + Z₀) = (150−50)/(150+50) = 100/200 = 0.5. Positive Γ means reflected wave has same polarity as incident.',
+   steps:[
+     {n:'Formula',f:'Γ = (Z_L − Z₀) / (Z_L + Z₀)'},
+     {n:'Substitute',f:'Γ = (150 − 50) / (150 + 50) = 100/200'},
+     {n:'Result',f:'Γ = 0.5'},
+   ]},
+  {id:'t5q5',src:'Practice',n:'P4',type:'mc',
+   text:'An SCR (thyristor) has been triggered ON. How can it be turned OFF in a DC circuit?',
+   opts:[
+     'Apply a negative pulse to the gate.',
+     'Remove the gate signal.',
+     'The anode current must be reduced below the holding current (force commutation).',
+     'Apply reverse gate voltage.',
+   ],
+   ans:2,
+   exp:'<strong>Answer: (c)</strong> — Once latched ON, the gate has no control. In DC circuits, the only way to turn off an SCR is force commutation: reduce anode current below I_hold (e.g. using a commutation circuit). In AC circuits, turn-off occurs naturally at the zero crossing.'},
+  {id:'t5q6',src:'Practice',n:'P5',type:'mc',
+   text:'What is the EMC model? Which component should you target to solve an EMC problem?',
+   opts:[
+     'Source only — reduce emissions at the source.',
+     'Source → Coupling Path → Victim. Break ANY one of the three.',
+     'Victim only — improve immunity of the victim.',
+     'Coupling path only — always shield cables.',
+   ],
+   ans:1,
+   exp:'<strong>Answer: (b)</strong> — The EMC model has 3 parts: Source, Coupling Path, Victim. Breaking ANY one solves the problem. Options: reduce source emissions, break the coupling path (shield, filter, distance), or improve victim immunity.'},
+  {id:'t5q7',src:'Practice',n:'P6',type:'mc',
+   text:'What happens to the resistance of a copper conductor at high frequencies due to the skin effect?',
+   opts:[
+     'Resistance decreases because electrons move faster.',
+     'Resistance stays constant — skin effect only affects inductance.',
+     'Resistance increases because current is confined to a thin surface layer, reducing the effective cross-section.',
+     'Resistance doubles at every octave of frequency.',
+   ],
+   ans:2,
+   exp:'<strong>Answer: (c)</strong> — Skin effect: at high frequency, current concentrates near the surface within skin depth δ = √(2ρ/ωμ). Smaller δ → smaller effective conductor cross-section → higher resistance. R increases proportional to √f.'},
+  {id:'t5q8',src:'Practice',n:'P7',type:'calc',
+   text:'An SCR half-wave controlled rectifier is connected to 230 V RMS AC. Firing angle α = 60°. What is the average DC output voltage? (Use V_avg = V_pk/(2π) × (1 + cos α))',
+   opts:['51.8 V','77.6 V','103.5 V','155.3 V'],
+   ans:1,
+   exp:'<strong>Answer: (b) ≈ 77.6 V</strong> — V_pk = 230 × √2 = 325.3 V. V_avg = (V_pk / 2π)(1 + cos 60°) = (325.3 / 6.283)(1 + 0.5) = 51.78 × 1.5 = 77.6 V.',
+   steps:[
+     {n:'Peak voltage',f:'V_pk = 230 × √2 = 325.3 V'},
+     {n:'Half-wave rectifier formula',f:'V_avg = (V_pk / 2π) × (1 + cos α)'},
+     {n:'Substitute α = 60°',f:'V_avg = (325.3 / 6.283) × (1 + 0.5) = 51.78 × 1.5'},
+     {n:'Result',f:'V_avg ≈ 77.6 V'},
+   ]},
+  {id:'t5q9',src:'Practice',n:'P8',type:'mc',
+   text:'A drive system generates EMC noise. Which approach attacks the COUPLING PATH (not the source or victim)?',
+   opts:[
+     'Reduce PWM switching speed (slower rise time).',
+     'Add a ferrite bead on the motor cable.',
+     'Use a motor with better insulation.',
+     'Replace the PWM controller with a linear driver.',
+   ],
+   ans:1,
+   exp:'<strong>Answer: (b)</strong> — A ferrite bead acts as a high-frequency choke on the cable, increasing the impedance of the coupling path for high-frequency noise. Options (a) and (d) reduce the SOURCE. Option (c) improves VICTIM immunity.'},
+],
+
+t6:[
+  {id:'t6q1',src:'2024',n:7,type:'diag',svg:'dig_input',
+   text:'The circuit shows a typical digital input of a motion controller with two diodes. What is the purpose of the diodes?',
+   opts:[
+     'They act as a low-pass filter.',
+     'They are used to limit/clamp the voltage.',
+     'They are needed as flywheel diodes for inductive loads.',
+     'They are used to limit the current.',
+   ],
+   ans:1,
+   exp:'<strong>Answer: (b)</strong> — The diodes clamp the input voltage to the range [GND−0.7V … Vcc+0.7V]. If Vin > Vcc+0.7V, upper diode conducts, clamping it. If Vin < −0.7V, lower diode conducts. They protect the MCU input pin from voltage spikes.'},
+  {id:'t6q2',src:'2024',n:8,type:'mc',
+   text:'A digital output of a motion controller is in "source mode". From the circuit datasheet, the output transistor has a pull-up resistor of ~820Ω to 3.3V, and an internal source transistor. What is the approximate maximum load current?',
+   opts:['2 mA','4 mA','5 mA','8 mA'],
+   ans:1,
+   exp:'<strong>Answer: (b) ~4 mA</strong> — Typical motion controller digital outputs (e.g. maxon EPOS) in source mode supply ~4 mA. This is set by internal current-limiting resistors and transistor design in the output stage.'},
+  {id:'t6q3',src:'2024',n:11,type:'mc',
+   text:'A solid-state relay (SSR) using a TRIAC output is used to control a LOAD. Which statement is correct?',
+   opts:[
+     'The SSR can be used for DC load currents only.',
+     'The SSR can be used for both AC and DC load currents.',
+     'The setup cannot be used for zero-crossing turn-on.',
+     'The SSR can be used for AC load currents only.',
+   ],
+   ans:3,
+   exp:'<strong>Answer: (d)</strong> — A TRIAC-based SSR is AC only. The TRIAC requires a current zero-crossing to turn OFF (natural commutation). Without a zero crossing (as in DC), the TRIAC stays latched ON permanently. TRIAC SSRs DO support zero-crossing turn-on.'},
+  {id:'t6q4',src:'2023',n:12,type:'diag',svg:'optocoupler',
+   text:'The circuit shows a CNY17F-3 optocoupler with a pull-up resistor to 3.3V. What is the output voltage when the input is 0V (LED off)?',
+   opts:['+3.3 V','0 V','−3.3 V','24 V'],
+   ans:0,
+   exp:'<strong>Answer: (a) +3.3V</strong> — When Vin = 0V, the LED is OFF, the phototransistor is OFF (open circuit). The output is pulled HIGH to +3.3V through the pull-up resistor. This is an inverting output: LOW input → HIGH output.'},
+  {id:'t6q5',src:'2024',n:13,type:'mc',
+   text:'A comparator circuit (U1 ideal) has positive feedback — a Schmitt trigger. Statement 1: Vin=4V → Vout=5V. Statement 2: This circuit has hysteresis near the switching point.',
+   opts:[
+     'Statements 1 and 2 are both correct.',
+     'Statements 1 and 2 are both incorrect.',
+     'Only statement 1 is correct, statement 2 is incorrect.',
+     'Only statement 2 is correct, statement 1 is incorrect.',
+   ],
+   ans:3,
+   exp:'<strong>Answer: (d)</strong> — Statement 2 TRUE: positive feedback creates hysteresis (two different switching thresholds), which is the defining feature of a Schmitt trigger. Statement 1 depends on the circuit values; typically Vin=4V may already be above the upper threshold making Vout=0V (not 5V), so Statement 1 is FALSE.'},
+  {id:'t6q6',src:'2023',n:13,type:'mc',
+   text:'[2023 variant] Schmitt trigger: Statement 1: Vin=1V → Vout=5V. Statement 2: Circuit has hysteresis.',
+   opts:[
+     'Statements 1 and 2 are both correct.',
+     'Statements 1 and 2 are both incorrect.',
+     'Only statement 1 is correct, statement 2 is incorrect.',
+     'Only statement 2 is correct, statement 1 is incorrect.',
+   ],
+   ans:0,
+   exp:'<strong>Answer: (a)</strong> — In the 2023 version: Vin=1V is BELOW the lower switching threshold → Vout = +5V (TRUE). Statement 2 TRUE: positive feedback → hysteresis. Both statements correct.'},
+  {id:'t6q7',src:'Practice',n:'P1',type:'calc',
+   text:'You want to drive an optocoupler LED (V_F=1.4V, I_F=5mA) from a 3.3V Arduino output. What series resistor R is needed?',
+   opts:['270Ω','380Ω','680Ω','1kΩ'],
+   ans:0,
+   exp:'<strong>Answer: (a) 380Ω → use 390Ω standard</strong> — R = (V_supply − V_F) / I_F = (3.3 − 1.4) / 0.005 = 1.9 / 0.005 = 380Ω.',
+   steps:[
+     {n:'Formula',f:'R = (V_supply − V_F) / I_F'},
+     {n:'Substitute',f:'R = (3.3 − 1.4) / 0.005 = 1.9 / 0.005'},
+     {n:'Result',f:'R = 380Ω → use 390Ω standard value'},
+   ]},
+],
+
+t7:[
+  {id:'t7q1',src:'2024',n:9,type:'mc',
+   text:'Statement 1: A parabolic velocity profile is the best solution for moving optimally fast from A to B.\nStatement 2: During regenerative braking (energy returned to supply), the motor still heats up.',
+   opts:[
+     'Only statement 1 is correct, statement 2 is incorrect.',
+     'Only statement 2 is correct, statement 1 is incorrect.',
+     'Statements 1 and 2 are both correct.',
+     'Statements 1 and 2 are both incorrect.',
+   ],
+   ans:1,
+   exp:'<strong>Answer: (b)</strong> — Statement 1 FALSE: the <em>trapezoidal</em> (constant acceleration) profile is time-optimal, not parabolic. Statement 2 TRUE: current still flows through R_rotor during braking → I²R copper losses → heat generated regardless of energy flow direction.'},
+  {id:'t7q2',src:'2024',n:10,type:'mc',
+   text:'Statement 1: A properly tuned PID will reduce all static errors to zero.\nStatement 2: Speed feedforward ensures stability in all cases even if PID is poorly tuned.',
+   opts:[
+     'Only statement 1 is correct, statement 2 is incorrect.',
+     'Only statement 2 is correct, statement 1 is incorrect.',
+     'Statements 1 and 2 are both correct.',
+     'Statements 1 and 2 are both incorrect.',
+   ],
+   ans:0,
+   exp:'<strong>Answer: (a)</strong> — Statement 1 TRUE: the integral term (Ki>0) accumulates error until it forces zero steady-state error for constant setpoint. Statement 2 FALSE: feedforward is open-loop and has NO effect on closed-loop stability. A badly tuned PID will still oscillate.'},
+  {id:'t7q3',src:'Practice',n:'P1',type:'diag',svg:'motion_profile',
+   text:'A trapezoidal motion profile has a_max = 100 rad/s², v_max = 50 rad/s. How long is the acceleration phase?',
+   opts:['0.5 s','1.0 s','2.0 s','5.0 s'],
+   ans:0,
+   exp:'<strong>Answer: (a) 0.5 s</strong> — t_acc = v_max / a_max = 50 / 100 = 0.5 s.',
+   steps:[
+     {n:'Formula',f:'t_acc = v_max / a_max'},
+     {n:'Substitute',f:'t_acc = 50 / 100'},
+     {n:'Result',f:'t_acc = 0.5 s'},
+   ]},
+  {id:'t7q4',src:'Practice',n:'P2',type:'diag',svg:'thermal_model',
+   text:'Motor: R_r=2Ω, R_th=1.5°C/W, τ_th=25min, isolation class H (ΔT_max=180°C), no-load losses P_nl=15W. At nominal current I_nom, ΔT_final=180°C and no-load losses account for the rest. What is I_nom? (Hint: P_total = I²R + P_nl = ΔT_max/R_th)',
+   opts:['5 A','7 A','8 A','10 A'],
+   ans:1,
+   exp:'<strong>Answer: (b) 7 A</strong> — P_total = ΔT_max/R_th = 180/1.5 = 120W. P_copper = 120−15 = 105W. I_nom = √(P_cu/R) = √(105/2) = √52.5 ≈ 7.25A → ~7A.',
+   steps:[
+     {n:'Total power at max temp',f:'P_total = ΔT_max / R_th = 180 / 1.5 = 120 W'},
+     {n:'Copper losses (subtract no-load)',f:'P_cu = 120 − 15 = 105 W'},
+     {n:'Nominal current',f:'I_nom = √(P_cu / R_r) = √(105/2) ≈ 7.25 A'},
+   ]},
+  {id:'t7q5',src:'Practice',n:'P3',type:'calc',
+   text:'Motor: R_r=2Ω, R_th=1.5°C/W. At 20% overload, I_OL = 1.2 × I_nom = 1.2 × 7.25 = 8.7A. What is the final temperature rise ΔT_OL if kept at overload continuously? (Only copper losses; ignore no-load losses for this question)',
+   opts:['120°C','151°C','228°C','180°C'],
+   ans:2,
+   exp:'<strong>Answer: (c) ~228°C</strong> — P_OL = I_OL² × R_r = 8.7² × 2 = 75.69 × 2 = 151.4W. ΔT_OL = P_OL × R_th = 151.4 × 1.5 = 227°C.',
+   steps:[
+     {n:'Overload current',f:'I_OL = 1.2 × 7.25 = 8.7 A'},
+     {n:'Copper loss at overload',f:'P_OL = I_OL² × R_r = 8.7² × 2 = 151.4 W'},
+     {n:'Temperature rise',f:'ΔT_OL = P_OL × R_th = 151.4 × 1.5 ≈ 227°C'},
+   ]},
+  {id:'t7q6',src:'Practice',n:'P4',type:'mc',
+   text:'In a cascaded control system, which control loop has the HIGHEST bandwidth (runs fastest)?',
+   opts:['Position loop','Velocity loop','Current/torque loop','All loops run at the same rate'],
+   ans:2,
+   exp:'<strong>Answer: (c) Current/torque loop</strong> — The innermost loop must be the fastest. Typical bandwidths: Current ~1-5 kHz, Velocity ~100-500 Hz, Position ~10-50 Hz. Each outer loop must be 3-10× slower than the inner one.'},
+  {id:'t7q7',src:'Practice',n:'P5',type:'calc',
+   text:'Motor: τ_th = 10 min, R_r = 2Ω, R_th = 1°C/W. Driven at I = 5A. ΔT_final = 50°C. How long until the motor reaches ΔT = 25°C (half of ΔT_final)?',
+   opts:['4.9 min','6.9 min','10 min','16 min'],
+   ans:1,
+   exp:'<strong>Answer: (b) ≈ 6.9 min</strong> — ΔT_∞ = I²×R_r×R_th = 25×2×1 = 50°C. t = −τ×ln(1−ΔT/ΔT_∞) = −10×ln(1−25/50) = −10×ln(0.5) = −10×(−0.693) = 6.93 min.',
+   steps:[
+     {n:'Final temperature rise',f:'ΔT_∞ = I² × R_r × R_th = 25 × 2 × 1 = 50°C'},
+     {n:'Time formula',f:'t = −τ_th × ln(1 − ΔT / ΔT_∞)'},
+     {n:'Substitute ΔT=25°C',f:'t = −10 × ln(1 − 25/50) = −10 × ln(0.5)'},
+     {n:'Result',f:'t = 10 × 0.693 ≈ 6.9 min'},
+   ]},
+  {id:'t7q8',src:'2024',n:'Open',type:'calc',
+   text:'Motor specs: Isolation class H (ΔT_max = 180°C), R_th = 2°C/W, R_rotor = 1.5Ω, no-load losses P_nl = 18W. What is the nominal current I_nom?',
+   opts:['5.0 A','6.0 A','7.0 A','8.5 A'],
+   ans:2,
+   exp:'<strong>Answer: (c) 7.0 A</strong> — P_total = ΔT_max / R_th = 180/2 = 90 W. P_copper = 90 − 18 = 72 W. I_nom = √(P_cu / R_r) = √(72/1.5) = √48 ≈ 6.93 A ≈ 7.0 A.',
+   steps:[
+     {n:'Max allowable power',f:'P_total = ΔT_max / R_th = 180 / 2 = 90 W'},
+     {n:'Subtract no-load losses',f:'P_cu = 90 − 18 = 72 W'},
+     {n:'Nominal current',f:'I_nom = √(P_cu / R_r) = √(72 / 1.5) = √48 ≈ 7.0 A'},
+   ]},
+  {id:'t7open1',src:'2024',n:'Open-A',type:'open',subtype:'number',
+   text:'[2024 Exam — Open] Motor: Isolation class H (ΔT_max=180°C), R_th=2°C/W, R_r=1.5Ω, P_nl=18W.\n\nStep 1: Calculate P_total (max allowable power loss).\nStep 2: Calculate P_copper.\nStep 3: Calculate I_nom.\n\nEnter your final answer for I_nom in Amperes.',
+   ans_val:6.93, unit:'A', tolerance:0.08,
+   steps:[{n:'P_total = ΔT_max/R_th',f:'180/2 = 90 W'},{n:'P_cu = P_total − P_nl',f:'90 − 18 = 72 W'},{n:'I_nom = √(P_cu/R_r)',f:'√(72/1.5) = √48 ≈ 6.93 A'}],
+   explanation:'<strong>P_total = 180/2 = 90 W</strong>. <strong>P_cu = 90−18 = 72 W</strong>. <strong>I_nom = √(72/1.5) = √48 ≈ 6.93 A ≈ 7 A</strong>. Accept 6.9–7.5 A.'},
+  {id:'t7open2',src:'Practice',n:'Open-B',type:'open',subtype:'number',
+   text:'Using the same motor (I_nom ≈ 7A, R_r=1.5Ω, R_th=2°C/W, P_nl=18W).\nAt 20% overload: I_OL = 1.2 × 7 = 8.4A.\n\nCalculate the steady-state temperature rise ΔT_OL at overload (include no-load losses).',
+   ans_val:247.7, unit:'°C', tolerance:0.08,
+   steps:[{n:'Copper losses at OL',f:'P_cu = 8.4² × 1.5 = 70.56 × 1.5 = 105.8 W'},{n:'Total losses',f:'P_OL = 105.8 + 18 = 123.8 W'},{n:'ΔT = P × R_th',f:'ΔT_OL = 123.8 × 2 = 247.7°C'}],
+   explanation:'<strong>P_cu = 8.4² × 1.5 = 105.8 W</strong>. <strong>P_total = 123.8 W</strong>. <strong>ΔT = 123.8 × 2 = 247.7°C</strong>. This exceeds the class H limit of 180°C → motor cannot sustain this overload continuously!'},
+]
+};
+
+// ─────────────────────────────────────────────
+// TOPICS CONFIG
+// ─────────────────────────────────────────────
+const TOPICS = [
+  {id:'home', label:'Overview',       icon:'🏠', num:''},
+  {id:'t1',   label:'Drive Systems',  icon:'⚙️', num:'1', ch:'Ch.17'},
+  {id:'t2',   label:'Sensors',        icon:'📡', num:'2', ch:'Ch.18'},
+  {id:'t3',   label:'Driving Motors', icon:'🔄', num:'3', ch:'Ch.19,21'},
+  {id:'t4',   label:'H-Bridge & PWM', icon:'🔌', num:'4', ch:'Ch.19'},
+  {id:'t5',   label:'SCR / EMC',      icon:'⚡', num:'5', ch:'Ch.20,21'},
+  {id:'t6',   label:'Interfacing',    icon:'🔗', num:'6', ch:'Canvas'},
+  {id:'t7',   label:'Position & Traj',icon:'🎯', num:'7', ch:'Ch.22'},
+  {id:'exam', label:'Full Practice Exam', icon:'📝', num:''},
+];
+
+// String.raw prevents JS escape processing so LaTeX \frac \tau \right etc. stay intact
+const raw = String.raw;
+const THEORY = {
+t1:raw`<div class="th">
+<h4>The Drive System Chain</h4>
+<p>Every electrical drive follows the same chain from energy source to mechanical output:</p>
+<div class="hl"><strong>Source → Power Converter → Motor → Transmission → Load</strong><br>
+Grid/Battery → H-bridge/Inverter → DC/BLDC/Stepper → Gearbox/Belt → Robot/Pump/Conveyor</div>
+<p>The <strong>power converter</strong> is the brain — it controls how much energy flows from source to motor, and in which direction. The <strong>transmission</strong> (gearbox) adapts the motor's natural speed/torque to what the load needs.</p>
+
+<h4>Open vs. Closed Loop</h4>
+<ul><li><strong>Open loop:</strong> No sensor, no feedback. Simple and cheap. Works if the load is perfectly predictable. Example: stepper motor in a 3D printer. Risk: errors accumulate unchecked.</li>
+<li><strong>Closed loop:</strong> A sensor measures the output → controller compares to setpoint → corrects the error. More accurate, robust to disturbances. Example: servo with encoder.</li></ul>
+<div class="hl tip">💡 Closed loop is always better for precision — but requires a sensor and more complex control.</div>
+
+<h4>Gearbox — The N² Rule ⭐</h4>
+<p>A gearbox with ratio $N$ (where $N > 1$ means speed reduction / torque increase):</p>
+<div class="hl">
+$$\omega_{load} = \frac{\omega_{motor}}{N} \qquad T_{load} = T_{motor} \cdot N \cdot \eta$$
+$$J_{ref} = \frac{J_{load}}{N^2} \quad \text{(reflected inertia at motor shaft)}$$
+</div>
+<p>The $N^2$ rule is the most important gearbox concept: inertia is divided by $N^2$, making the load feel much lighter to the motor. A gearbox with $N=4$ makes a load appear $16\times$ lighter!</p>
+
+<div class="th ex"><div class="ex-title">📐 Example — Reflected Inertia</div>
+$J_{motor} = 0.001\,\text{kg·m}^2$, $J_{load} = 0.016\,\text{kg·m}^2$, $N = 4$<br>
+$J_{ref} = J_{load}/N^2 = 0.016/16 = \mathbf{0.001\,\text{kg·m}^2}$<br>
+Total inertia at motor: $J_{tot} = J_{motor} + J_{ref} = 0.002\,\text{kg·m}^2$
+</div>
+
+<h4>Optimal Gear Ratio ⭐</h4>
+<p>Maximum acceleration is achieved when reflected inertia equals motor inertia:</p>
+<div class="hl">$$N_{opt} = \sqrt{\frac{J_{load}}{J_{motor}}}$$
+At $N_{opt}$: $J_{tot} = 2 \cdot J_{motor}$ → $\alpha_{max} = \frac{T_{motor}}{2 \cdot J_{motor}}$</div>
+<div class="th ex"><div class="ex-title">📐 Example — Optimal Gear Ratio</div>
+$J_{load} = 0.009\,\text{kg·m}^2$, $J_{motor} = 0.001\,\text{kg·m}^2$<br>
+$N_{opt} = \sqrt{0.009/0.001} = \sqrt{9} = \mathbf{3}$
+</div>
+
+<h4>Power & Efficiency</h4>
+<div class="hl">$$P = T \cdot \omega \quad [W = N \cdot m \times rad/s]$$
+$$\eta = \frac{P_{out}}{P_{in}} \qquad \omega\,[\text{rad/s}] = n\,[\text{RPM}] \times \frac{2\pi}{60}$$</div>
+<ul><li>A gearbox always introduces losses: $\eta < 1$ → efficiency <em>decreases</em> with a gearbox</li>
+<li>Output torque with losses: $T_{load} = T_{motor} \times N \times \eta$</li></ul>
+
+<h4>Motor Thermal Model</h4>
+<p>Motors generate heat from copper losses ($I^2 R$). Too much heat destroys the winding insulation.</p>
+<div class="hl">$$P_{cu} = I^2 R_r \quad \text{(copper losses)}$$
+$$\Delta T_{ss} = P_{total} \times R_{th} \quad \text{(steady-state temp rise)}$$
+$$T(t) = \Delta T_\infty \left(1 - e^{-t/\tau_{th}}\right) \quad \text{(thermal transient)}$$</div>
+<table><tr><th>Isolation Class</th><th>Max ΔT Rise</th><th>Use case</th></tr>
+<tr><td>Class B</td><td>130°C</td><td>Standard motors</td></tr>
+<tr><td>Class F</td><td>155°C</td><td>Improved motors</td></tr>
+<tr><td>Class H</td><td>180°C</td><td>High-performance, drives</td></tr></table>
+
+<h4>📺 Watch — Gearbox & Gear Ratios</h4>
+<a class="yt-thumb" href="https://www.youtube.com/watch?v=RNj1BOy4PUY" target="_blank" rel="noopener"><img src="https://img.youtube.com/vi/RNj1BOy4PUY/hqdefault.jpg" alt="" loading="lazy"><div class="yt-play"></div></a>
+<p class="yt-label">▶ How a Gearbox Works – Gear Ratio Explained (2025)</p>
+<h4>📺 Watch — How a DC Motor Works</h4>
+<a class="yt-thumb" href="https://www.youtube.com/watch?v=CWulQ1ZSE3c" target="_blank" rel="noopener"><img src="https://img.youtube.com/vi/CWulQ1ZSE3c/hqdefault.jpg" alt="" loading="lazy"><div class="yt-play"></div></a>
+<p class="yt-label">▶ How does an Electric Motor work? — Jared Owen</p>
+</div>`,
+
+t2:raw`<div class="th">
+<h4>Why Sensors Matter</h4>
+<div class="hl"><strong>You can only control what you measure.</strong><br>
+The four things we measure in a drive system: Position · Speed · Current/Torque · Temperature</div>
+<h4>Key Sensor Specifications</h4>
+<ul>
+<li><strong>Accuracy:</strong> How close the measured value is to the true value. Systematic error.</li>
+<li><strong>Resolution:</strong> The smallest change that can be detected. A 12-bit ADC on ±10V has resolution of 20V/4096 ≈ 4.9 mV.</li>
+<li><strong>Linearity:</strong> The output should change proportionally to the input across the full range.</li>
+<li><strong>Repeatability (Precision):</strong> Same input → same output, every time. High repeatability ≠ high accuracy (can be consistently wrong).</li>
+<li><strong>Sensitivity:</strong> Output change per unit input change (e.g., mV/A for a current sensor).</li>
+<li><strong>Bandwidth:</strong> How fast the sensor can respond to changes.</li></ul>
+
+<h4>Incremental Encoder ⭐</h4>
+<p>An optical incremental encoder uses a grating disc and two photodetectors to generate position pulses:</p>
+<div class="hl">
+<strong>Channel A:</strong> PPR pulses per revolution (basic resolution)<br>
+<strong>Channel B:</strong> 90° phase-shifted — direction detection (A leads B = CW, B leads A = CCW)<br>
+<strong>Channel Z:</strong> One pulse per revolution — used for homing (absolute reference)<br>
+$$\text{Quadrature resolution} = 4 \times PPR \quad \text{(count all edges)}$$
+</div>
+<div class="th ex"><div class="ex-title">📐 Example — Encoder Resolution</div>
+Encoder: 50 PPR<br>
+Quadrature: $4 \times 50 = \mathbf{200}$ positions/revolution<br>
+Angular resolution: $360° / 200 = \mathbf{1.8°}$ per count
+</div>
+<p>High-end encoders use the <strong>Moiré fringe principle</strong> — two slightly-offset gratings create sinusoidal fringe patterns, giving sub-micron position resolution with SIN/COS interpolation.</p>
+<div class="hl warn">⚠️ Exam: "Absolute encoders give absolute position after power-on." Incremental encoders need homing first!</div>
+
+<h4>Current Sensors</h4>
+<p>Three main types — each with trade-offs in accuracy, isolation, and cost:</p>
+<table>
+<tr><th>Type</th><th>Formula</th><th>Isolation</th><th>Notes</th></tr>
+<tr><td>Shunt resistor</td><td>$V = I \cdot R_{shunt}$</td><td>❌ None</td><td>Simple, cheap, power loss = $I^2 R$</td></tr>
+<tr><td>Hall open-loop (ACS712)</td><td>$V_{out} = V_{ref} + S \cdot I$</td><td>✅ Yes</td><td>S=185 mV/A (±5A), offset drift at temperature</td></tr>
+<tr><td>LEM closed-loop (HO40)</td><td>$V_{out} = V_{ref} + S \cdot (I/N_p)$</td><td>✅ Yes</td><td>Secondary winding cancels flux → very accurate</td></tr>
+<tr><td>Current transformer</td><td>$I_s = I_p / N$</td><td>✅ Yes</td><td>AC only — needs changing magnetic flux!</td></tr>
+</table>
+<p>The <strong>ACS712</strong> (open-loop Hall): at zero current, $V_{out} = V_{cc}/2$ (2.5V on 5V supply). Sensitivity = 185 mV/A for the 5A version.</p>
+<p>The <strong>LEM zero-flux (HO40)</strong>: a secondary winding with a current source drives flux to zero. The secondary current is proportional to primary current × winding ratio. Much better accuracy and bandwidth than open-loop.</p>
+
+<h4>Temperature Sensors</h4>
+<table>
+<tr><th>Sensor</th><th>Output</th><th>Characteristic</th><th>Best use</th></tr>
+<tr><td>PTC thermistor</td><td>Resistance ↑ with T</td><td>Nonlinear</td><td>Motor winding protection (binary trip)</td></tr>
+<tr><td>NTC thermistor</td><td>Resistance ↓ with T</td><td>Nonlinear</td><td>General temperature measurement</td></tr>
+<tr><td>RTD (Pt100)</td><td>Resistance ↑ with T</td><td>Linear ~0.385 Ω/°C</td><td>Precise lab/industrial measurement</td></tr>
+<tr><td>Thermocouple</td><td>Voltage (µV/°C)</td><td>Linear</td><td>High-temp measurement, large ranges</td></tr>
+</table>
+<div class="hl warn">⚠️ Classic exam trap: A thermocouple generates a <strong>VOLTAGE</strong> (Seebeck effect) — NOT a current!</div>
+
+<h4>📺 Watch — How Encoders Work</h4>
+<a class="yt-thumb" href="https://www.youtube.com/watch?v=nnk0DV5kgMk" target="_blank" rel="noopener"><img src="https://img.youtube.com/vi/nnk0DV5kgMk/hqdefault.jpg" alt="" loading="lazy"><div class="yt-play"></div></a>
+<p class="yt-label">▶ What is an ENCODER — Incremental & Absolute explained</p>
+</div>`,
+
+t3:raw`<div class="th">
+<h4>DC Brush Motor — Equivalent Circuit</h4>
+<p>The DC motor can be modelled as a voltage source (back-EMF) in series with a resistor and inductor:</p>
+<div class="hl">$$V = E + I \cdot R_r + L \frac{dI}{dt}$$
+Back-EMF: $E = k \cdot \omega$ &nbsp;&nbsp;|&nbsp;&nbsp; Torque: $T = k \cdot I$<br>
+Steady-state speed: $\omega = \dfrac{V - I \cdot R_r}{k}$</div>
+<div class="th">
+<div class="def"><span class="sym">$k$</span><span class="desc">Motor constant [Nm/A = Vs/rad]. Same value for torque and back-EMF!</span></div>
+<div class="def"><span class="sym">$R_r$</span><span class="desc">Rotor winding resistance [Ω]. Main source of heat.</span></div>
+<div class="def"><span class="sym">$\omega_0$</span><span class="desc">No-load speed: $V/k$ — max speed at zero torque</span></div>
+<div class="def"><span class="sym">$T_{stall}$</span><span class="desc">Stall torque: $k \cdot V/R_r$ — max torque at zero speed</span></div>
+</div>
+<div class="th ex"><div class="ex-title">📐 Example — DC Motor Speed</div>
+$V = 24\,\text{V}$, $R_r = 2\,\Omega$, $k = 0.15\,\text{Vs/rad}$, $I = 3\,\text{A}$<br>
+$\omega = (V - I \cdot R)/k = (24 - 6)/0.15 = 18/0.15 = \mathbf{120\,\text{rad/s}}$<br>
+RPM: $120 \times 60/(2\pi) \approx 1146\,\text{RPM}$
+</div>
+
+<h4>Speed–Torque Curve</h4>
+<p>The DC motor has a <strong>linear speed–torque characteristic</strong>:</p>
+<div class="hl">$$\omega = \frac{V}{k} - \frac{R_r}{k^2} \cdot T$$
+At no load ($T=0$): $\omega = \omega_0 = V/k$ &nbsp;&nbsp;|&nbsp;&nbsp; At stall ($\omega=0$): $T_{stall} = kV/R_r$</div>
+<p>The slope is $-R_r/k^2$. A larger $k$ or smaller $R_r$ = flatter curve = better speed regulation under load.</p>
+
+<h4>Time Constants</h4>
+<ul>
+<li><strong>Electrical:</strong> $\tau_e = L_r/R_r$ — how fast current responds to voltage changes (ms range)</li>
+<li><strong>Mechanical:</strong> $\tau_m = J \cdot R_r / k^2$ — how fast speed responds to torque (10s–100s ms)</li>
+</ul>
+
+<h4>BLDC Motor (Brushless DC) ⭐</h4>
+<p>BLDC = permanent magnet rotor, copper windings on stator. No brushes → no wear, no sparks.</p>
+<div class="hl">Commutation done electronically (not mechanically).<br>
+6-step commutation: at each step, 2 of 3 phases are energised based on rotor position.<br>
+<strong>Hall sensors or encoder are mandatory</strong> — without them, the controller doesn't know rotor position.</div>
+<ul>
+<li>Windings on stator → heat flows directly to case → excellent thermal performance</li>
+<li>No friction from brushes → high efficiency, long life</li>
+<li>FOC (Field-Oriented Control): controls current vector in d-q frame → maximum torque per amp</li>
+</ul>
+
+<h4>Stepper Motor</h4>
+<p>A stepper motor moves in discrete steps using toothed stator and rotor, no position sensor needed.</p>
+<div class="hl">Full step: $\mathbf{200\,\text{steps/rev}}$ → $1.8°/\text{step}$<br>
+Half step: $400\,\text{steps/rev}$ → $0.9°/\text{step}$<br>
+Microstepping: $\times 8$, $\times 16$, $\times 32$ — smoother motion but no higher accuracy</div>
+<ul>
+<li>Open-loop — simple, no encoder needed. But loses steps if overloaded!</li>
+<li>Full rated current flows even when stationary → <strong>very poor thermal efficiency</strong></li>
+<li>Holding torque is well-defined — good for positioning without brakes</li>
+</ul>
+<div class="hl warn">⚠️ Stepper: always draws full current when holding position → heats up even when not moving!</div>
+
+<h4>Motor Type Comparison</h4>
+<table>
+<tr><th>Motor</th><th>Controller</th><th>Feedback</th><th>Thermal</th><th>Best for</th></tr>
+<tr><td>DC brush</td><td>Simple (H-bridge)</td><td>Optional</td><td>OK</td><td>Simple speed control</td></tr>
+<tr><td>BLDC</td><td>Electronic commutation</td><td>Required</td><td>Excellent</td><td>High performance</td></tr>
+<tr><td>Stepper</td><td>Open-loop driver</td><td>None needed</td><td>Poor ⚠️</td><td>Low-cost positioning</td></tr>
+<tr><td>Induction</td><td>VFD (complex)</td><td>Optional</td><td>Excellent</td><td>Industrial AC drives</td></tr>
+</table>
+
+<h4>📺 Watch — How BLDC Motors Work</h4>
+<a class="yt-thumb" href="https://www.youtube.com/watch?v=bCEiOnuODac" target="_blank" rel="noopener"><img src="https://img.youtube.com/vi/bCEiOnuODac/hqdefault.jpg" alt="" loading="lazy"><div class="yt-play"></div></a>
+<p class="yt-label">▶ Brushless DC Motor — How it works (Learn Engineering)</p>
+<h4>📺 Watch — Stepper vs Brushed vs Brushless</h4>
+<a class="yt-thumb" href="https://www.youtube.com/watch?v=Fi1GDwiuDTU" target="_blank" rel="noopener"><img src="https://img.youtube.com/vi/Fi1GDwiuDTU/hqdefault.jpg" alt="" loading="lazy"><div class="yt-play"></div></a>
+<p class="yt-label">▶ Stepper, Brushed, and Brushless Motors — Pros & Cons</p>
+</div>`,
+
+t4:raw`<div class="th">
+<h4>H-Bridge — Motor Direction Control</h4>
+<p>An H-bridge uses 4 transistors (usually MOSFETs) arranged in an "H" shape to drive a motor in both directions:</p>
+<div class="hl">
+<strong>Q1 + Q4 ON:</strong> Current flows Motor+ → Motor− → Forward rotation<br>
+<strong>Q2 + Q3 ON:</strong> Current flows Motor− → Motor+ → Reverse rotation<br>
+<strong>Q1 + Q3 ON (or Q2+Q4):</strong> Motor terminals shorted → Active braking<br>
+<strong>All OFF:</strong> Motor freewheels (coasts)
+</div>
+<p><strong>Freewheeling diodes</strong> (body diodes of MOSFETs) are critical: when a switch opens, the motor inductance forces current to continue. Without diodes, this creates a voltage spike that destroys the transistors.</p>
+<p><strong>Dead time:</strong> A brief delay between turning one transistor OFF and the complementary one ON. Prevents <em>shoot-through</em> — a momentary short-circuit from supply to ground through both transistors. Typically 100 ns – 1 µs.</p>
+
+<h4>PWM Speed Control</h4>
+<p>Pulse Width Modulation (PWM) controls motor speed by rapidly switching the motor voltage ON and OFF:</p>
+<div class="hl">$$V_{avg} = D \times V_{dc} \quad \text{where } D = \frac{t_{on}}{T_{period}} \in [0,1]$$
+Current ripple: $\Delta I = \dfrac{V_{dc} \cdot D \cdot (1-D)}{L \cdot f_{PWM}}$</div>
+<ul>
+<li>$D = 0$: motor off (no average voltage). $D = 1$: full voltage.</li>
+<li>Higher $f_{PWM}$ → less current ripple → smoother torque → less motor noise</li>
+<li>Typical: $f_{PWM} = 10$–$20\,\text{kHz}$ (above human hearing)</li>
+<li>Motor inductance $L$ acts as a natural low-pass filter on the current</li>
+</ul>
+<div class="th ex"><div class="ex-title">📐 Example — PWM Average Voltage</div>
+$V_{dc} = 24\,\text{V}$, $D = 0.6$ (60% duty cycle)<br>
+$V_{avg} = 0.6 \times 24 = \mathbf{14.4\,\text{V}}$<br>
+At 75% duty: $V_{avg} = 0.75 \times 24 = 18\,\text{V}$
+</div>
+
+<h4>RC Low-Pass Filter on MOSFET Gate</h4>
+<p>To measure MOSFET characteristics ($V_{GS}$ vs $I_{DS}$), you need a stable DC voltage at the gate. But a microcontroller can only produce PWM:</p>
+<div class="hl">PWM square wave → RC low-pass filter → Stable DC voltage<br>
+$$V_{gate} = D \times V_{supply}$$
+Without RC: gate sees square wave → MOSFET switches fully ON/OFF → no linear region!</div>
+<p>The RC time constant $\tau = RC$ must be much larger than $T_{PWM}$ to smooth the ripple. Result: by changing duty cycle $D$, you get a continuously variable $V_{GS}$ from 0 to $V_{supply}$.</p>
+
+<h4>MOSFET Operating Regions</h4>
+<table>
+<tr><th>Region</th><th>Condition</th><th>Behaviour</th><th>Use</th></tr>
+<tr><td>Cutoff</td><td>$V_{GS} < V_{th}$</td><td>$I_{DS} \approx 0$ (off)</td><td>Switch OFF</td></tr>
+<tr><td>Linear / Ohmic</td><td>$V_{DS} < V_{GS} - V_{th}$</td><td>Acts as resistor $R_{DS,on}$</td><td>Switch ON</td></tr>
+<tr><td>Saturation</td><td>$V_{DS} > V_{GS} - V_{th}$</td><td>$I_{DS}$ controlled by $V_{GS}$ only</td><td>Amplifier / linear mode</td></tr>
+</table>
+<ul>
+<li><strong>Threshold voltage $V_{th}$:</strong> read from VGS-IDS graph as the x-intercept (~1–3V)</li>
+<li><strong>$R_{DS,on}$:</strong> on-resistance in ohmic region — contributes to conduction losses $P = I^2 R_{DS,on}$</li>
+</ul>
+
+<h4>Control Loop Structure</h4>
+<p>Drive systems use cascaded (nested) control loops. Each inner loop must be faster than its outer loop:</p>
+<div class="hl">
+<strong>Outer:</strong> Position loop — bandwidth ~10 Hz, setpoint: position [rad]<br>
+<strong>Middle:</strong> Speed loop — bandwidth ~100 Hz, setpoint: velocity [rad/s]<br>
+<strong>Inner:</strong> Current/Torque loop — bandwidth ~1 kHz, setpoint: current [A]<br>
+Rule: each inner loop 3–10× faster than the outer loop.
+</div>
+
+<h4>📺 Watch — H-Bridge Motor Control</h4>
+<a class="yt-thumb" href="https://www.youtube.com/watch?v=YYMsS50x1UY" target="_blank" rel="noopener"><img src="https://img.youtube.com/vi/YYMsS50x1UY/hqdefault.jpg" alt="" loading="lazy"><div class="yt-play"></div></a>
+<p class="yt-label">▶ H-Bridge Motor Control Basics Explained</p>
+</div>`,
+
+t5:raw`<div class="th">
+<h4>SCR (Silicon Controlled Rectifier) / Thyristor ⭐</h4>
+<p>The SCR is a 4-layer PNPN semiconductor with 3 terminals. It is the original power electronics device, used for controlled rectification of AC to DC.</p>
+<div class="hl">
+<strong>Terminals:</strong> Anode (A) — Cathode (K) — Gate (G)<br>
+<strong>Turn ON:</strong> Apply positive gate pulse while $V_{AK} > 0$ (anode positive)<br>
+<strong>Turn OFF:</strong> Current falls below $I_{hold}$ — in AC: happens automatically at zero crossing<br>
+<strong>Once ON: the gate has no further control</strong> — SCR latches in conducting state!
+</div>
+<p>SCRs are used as <strong>controlled rectifiers</strong>: by delaying the gate pulse by firing angle $\alpha$ after the zero crossing, you control how much of each AC half-cycle is passed to the load:</p>
+<div class="hl">$$V_{avg} = \frac{V_{pk}}{2\pi}(1 + \cos\alpha)$$
+$\alpha = 0°$: full voltage $V_{avg} = V_{pk}/\pi$&nbsp;&nbsp;|&nbsp;&nbsp;$\alpha = 90°$: half&nbsp;&nbsp;|&nbsp;&nbsp;$\alpha = 180°$: zero</div>
+<div class="th ex"><div class="ex-title">📐 Example — Controlled Rectifier</div>
+$V_{pk} = 325\,\text{V}$ (230 Vrms), $\alpha = 60°$<br>
+$V_{avg} = \frac{325}{2\pi}(1 + \cos 60°) = \frac{325}{2\pi}(1 + 0.5) = \frac{325 \times 1.5}{6.283} \approx \mathbf{77.6\,\text{V}}$
+</div>
+
+<h4>TRIAC</h4>
+<p>A TRIAC is essentially two SCRs in anti-parallel — it conducts in <strong>both directions</strong>:</p>
+<ul>
+<li>Used for AC power control: lamp dimmers, AC motor speed control, SSRs</li>
+<li>Can be triggered in all four quadrants (both polarities of V and gate signal)</li>
+<li>Turn OFF only happens at AC zero crossing — cannot control DC loads!</li>
+</ul>
+<div class="hl warn">⚠️ TRIAC cannot switch OFF a DC load — zero crossing never comes with DC!</div>
+
+<h4>EMC (Electromagnetic Compatibility) ⭐</h4>
+<p>EMC problems arise when one circuit disturbs another. The three-element model:</p>
+<div class="hl"><strong>Source → Coupling Path → Victim</strong><br>
+Break <em>any one</em> of the three links to solve the EMC problem.</div>
+<ul>
+<li><strong>Reduce source:</strong> Slow down switching edges (reduce dV/dt), add snubbers, use spread-spectrum PWM</li>
+<li><strong>Break coupling path:</strong> Shielding, twisted-pair cables, proper PCB layout, separation of power and signal grounds</li>
+<li><strong>Harden victim:</strong> Filtering at inputs, decoupling capacitors, ferrite beads, TVS diodes</li>
+<li><strong>Common-mode current</strong> is the dominant EMC problem in variable-speed drives — return currents flow through parasitic capacitances to chassis ground</li>
+</ul>
+
+<h4>Transmission Lines ⭐</h4>
+<p>At high frequencies or fast edges, a wire is no longer just a wire — it becomes a <strong>transmission line</strong> with distributed L and C:</p>
+<div class="hl">Characteristic impedance: $Z_0 = \sqrt{L'/C'}$<br>
+Propagation velocity: $v_p = \frac{1}{\sqrt{L' C'}} \approx 0.66c$ for RG-58 coax<br>
+Reflection coefficient: $\Gamma = \dfrac{Z_L - Z_0}{Z_L + Z_0}$<br>
+<strong>Matched load:</strong> $Z_L = Z_0$ → $\Gamma = 0$ → no reflections!</div>
+
+<p><strong>The 10% rule:</strong> You must consider transmission line effects when:</p>
+<div class="hl">$$\ell \geq 0.1 \times v_p \times t_{rise}$$
+Spatial extent of the edge = $v_p \times t_{rise}$. If cable is ≥ 10% of this, use TL rules.</div>
+<div class="th ex"><div class="ex-title">📐 Example — 10% Rule</div>
+$t_{rise} = 0.5\,\text{ns}$, $v_p = 0.66 \times 3 \times 10^8 = 1.98 \times 10^8\,\text{m/s}$<br>
+Spatial extent: $v_p \times t_{rise} = 1.98 \times 10^8 \times 0.5 \times 10^{-9} = 0.099\,\text{m} = 9.9\,\text{cm}$<br>
+10% rule threshold: $0.1 \times 9.9\,\text{cm} = \mathbf{9.9\,\text{mm}}$<br>
+Any cable longer than ~1 cm needs TL treatment for this edge!
+</div>
+
+<p><strong>L' from datasheet:</strong> If you know $Z_0$ and $C'$, use $L' = Z_0^2 \times C'$.</p>
+
+<h4>Skin Effect</h4>
+<ul>
+<li>At high frequency, current concentrates at the conductor surface within depth $\delta = \sqrt{2\rho/(\omega\mu)}$</li>
+<li>Effective resistance increases with $\sqrt{f}$ — becomes significant above ~100 kHz for copper</li>
+</ul>
+
+<h4>📺 Watch — How SCR/Thyristors Work</h4>
+<a class="yt-thumb" href="https://www.youtube.com/watch?v=jIA3fs9rF50" target="_blank" rel="noopener"><img src="https://img.youtube.com/vi/jIA3fs9rF50/hqdefault.jpg" alt="" loading="lazy"><div class="yt-play"></div></a>
+<p class="yt-label">▶ What is a Thyristor? How Thyristors Work? (SCR)</p>
+</div>`,
+
+t6:raw`<div class="th">
+<h4>Transistors as Switches — BJT</h4>
+<p>A BJT (NPN) switches between cutoff (OFF) and saturation (ON) — never operated in the linear region as a switch:</p>
+<div class="hl">
+<strong>ON (Saturation):</strong> $I_B \geq I_C/\beta$ &nbsp;→&nbsp; $V_{CE} \approx 0.2\,\text{V}$, acts as closed switch<br>
+<strong>OFF (Cutoff):</strong> $I_B = 0$ &nbsp;→&nbsp; $I_C \approx 0$, acts as open switch<br>
+$$R_B = \frac{V_{in} - V_{BE}}{I_B} \quad (V_{BE} \approx 0.7\,\text{V for silicon NPN})$$
+</div>
+<p>Design rule: choose $I_B$ at least $5 \times I_C/\beta$ to guarantee saturation (overdrive factor of 5).</p>
+
+<h4>MOSFET as Switch ⭐</h4>
+<p>MOSFETs are voltage-controlled — gate draws almost no current. Key placement rules:</p>
+<div class="hl">
+<strong>N-MOSFET (NMOS):</strong> ON when $V_{GS} > V_{th}$ — best as <em>low-side switch</em> (Source to GND)<br>
+<strong>P-MOSFET (PMOS):</strong> ON when $V_{GS} < -V_{th}$ — natural <em>high-side switch</em> (Source to supply)<br>
+<strong>N-MOSFET high-side:</strong> requires gate driver / bootstrap circuit (gate must go above supply!)
+</div>
+<ul>
+<li>N-MOSFET is preferred (lower $R_{DS,on}$ for same die size) — but high-side driving is more complex</li>
+<li>$P_{cond} = I^2 \times R_{DS,on}$ — conduction loss. $P_{sw} \propto f_{sw} \times V \times I$ — switching loss</li>
+</ul>
+
+<h4>Optocoupler (CNY17) ⭐</h4>
+<p>An optocoupler transmits signals using light across a galvanic isolation barrier. This breaks ground loops and protects microcontrollers from high-voltage surges:</p>
+<div class="hl">
+<strong>LED ON</strong> → light activates phototransistor → phototransistor conducts → output <strong>LOW</strong> (≈0V)<br>
+<strong>LED OFF</strong> → no light → phototransistor OFF → pull-up resistor → output <strong>HIGH</strong> (= V<sub>cc</sub>)<br>
+⚠️ Output is <strong>INVERTED</strong> relative to the input LED signal!<br>
+$$R_{LED} = \frac{V_{supply} - V_F}{I_F} \quad (V_F \approx 1.2\text{–}1.4\,\text{V,}\; I_F \approx 10\text{–}20\,\text{mA})$$
+</div>
+<div class="th ex"><div class="ex-title">📐 Example — LED Resistor</div>
+$V_{supply} = 5\,\text{V}$, $V_F = 1.2\,\text{V}$, $I_F = 10\,\text{mA}$<br>
+$R_{LED} = (5 - 1.2) / 0.010 = 3.8 / 0.010 = \mathbf{380\,\Omega}$
+</div>
+
+<h4>Solid-State Relay (SSR)</h4>
+<p>An SSR is an optocoupler + output power switch, in a compact package with full isolation:</p>
+<table>
+<tr><th>Output type</th><th>Load type</th><th>Turn OFF</th></tr>
+<tr><td>TRIAC output</td><td>AC loads only</td><td>Zero-crossing only</td></tr>
+<tr><td>MOSFET output</td><td>DC loads</td><td>Any time (controlled)</td></tr>
+</table>
+
+<h4>Digital Input Protection</h4>
+<p>Microcontroller I/O pins are fragile. Two protection mechanisms:</p>
+<ul>
+<li><strong>Clamping diodes:</strong> Built into every MCU pin. Clamp input voltage to [GND−0.7V, Vcc+0.7V]. Protects against ESD and overvoltage.</li>
+<li><strong>Series resistor:</strong> Limits current if clamp diode activates. Also filters high-frequency noise with pin capacitance.</li>
+</ul>
+<p><strong>Source vs Sink current:</strong></p>
+<ul>
+<li><strong>Source mode:</strong> Pin = HIGH, provides current. Load connected from pin to GND.</li>
+<li><strong>Sink mode:</strong> Pin = LOW, accepts current. Load connected from Vcc to pin.</li>
+</ul>
+
+<h4>Schmitt Trigger</h4>
+<p>A comparator with <strong>positive feedback</strong> creates hysteresis — two different switching thresholds:</p>
+<div class="hl">Threshold going UP: $V_{trip+}$ (higher)<br>
+Threshold going DOWN: $V_{trip-}$ (lower)<br>
+Hysteresis band: $V_{hyst} = V_{trip+} - V_{trip-}$<br>
+→ Prevents <strong>chattering</strong> near the threshold from noise</div>
+
+<h4>📺 Watch — How Optocouplers Work</h4>
+<a class="yt-thumb" href="https://www.youtube.com/watch?v=gTni6-R1rIk" target="_blank" rel="noopener"><img src="https://img.youtube.com/vi/gTni6-R1rIk/hqdefault.jpg" alt="" loading="lazy"><div class="yt-play"></div></a>
+<p class="yt-label">▶ How Optocouplers Work and How to Use Them (DC to Daylight)</p>
+</div>`,
+
+t7:raw`<div class="th">
+<h4>Motion Profiles ⭐</h4>
+<p>A motion profile defines how position, velocity, and acceleration change over time:</p>
+<div class="hl">
+<strong>Trapezoidal velocity profile = Time-optimal</strong> for bounded velocity and acceleration<br>
+3 phases: Accelerate (+$a_{max}$) → Cruise ($v_{max}$) → Decelerate ($-a_{max}$)<br>
+$$t_{acc} = \frac{v_{max}}{a_{max}} \qquad x_{acc} = \frac{1}{2} a_{max} t_{acc}^2$$
+</div>
+<div class="hl warn">⚠️ Exam trap: "Parabolic velocity profile is time-optimal" → <strong>FALSE</strong>! Trapezoidal is optimal.</div>
+
+<p><strong>S-curve profile:</strong> Limits the rate of change of acceleration (jerk). Smoother motion, less vibration — but takes more time than trapezoidal for the same move.</p>
+<div class="th ex"><div class="ex-title">📐 Example — Trapezoidal Profile</div>
+$v_{max} = 2\,\text{m/s}$, $a_{max} = 4\,\text{m/s}^2$<br>
+$t_{acc} = 2/4 = 0.5\,\text{s}$ &nbsp;|&nbsp; $x_{acc} = \frac{1}{2} \times 4 \times 0.5^2 = 0.5\,\text{m}$<br>
+Move distance 3 m: cruise distance = $3 - 2 \times 0.5 = 2\,\text{m}$, cruise time = $2/2 = 1\,\text{s}$<br>
+Total time: $0.5 + 1 + 0.5 = \mathbf{2\,\text{s}}$
+</div>
+
+<h4>PID Controller ⭐</h4>
+<p>The PID controller combines three terms, each correcting a different aspect of the error:</p>
+<div class="hl">$$u(t) = K_p \cdot e(t) + K_i \int e\,dt + K_d \frac{de}{dt}$$
+<strong>P:</strong> Proportional to error — fast response, but leaves steady-state error<br>
+<strong>I:</strong> Integral of error — eliminates steady-state error (at the cost of slower response)<br>
+<strong>D:</strong> Derivative of error — damps oscillations, but very sensitive to noise</div>
+
+<table>
+<tr><th>Term</th><th>Effect when increased</th><th>Side effect</th></tr>
+<tr><td>$K_p$ ↑</td><td>Faster response, less steady-state error</td><td>Risk of overshoot / oscillation</td></tr>
+<tr><td>$K_i$ ↑</td><td>Eliminates steady-state error</td><td>Slower, risk of windup / oscillation</td></tr>
+<tr><td>$K_d$ ↑</td><td>Damps overshoot, faster settling</td><td>Amplifies measurement noise</td></tr>
+</table>
+<div class="hl tip">✅ With $K_i > 0$: PID eliminates steady-state position error for a constant setpoint.</div>
+<div class="hl warn">⚠️ Derivative term amplifies high-frequency sensor noise — usually filtered in practice.</div>
+
+<h4>Feedforward Control</h4>
+<p>Feedforward adds an open-loop contribution based on the desired trajectory — it does NOT use feedback:</p>
+<div class="hl">$$u_{ff} = K_{ff} \cdot \dot{r}(t) \quad \text{(velocity feedforward)}$$
+Reduces tracking error <em>during motion</em>.<br>
+<strong>Does NOT affect stability</strong> — open-loop by definition. Cannot cause oscillation.</div>
+
+<h4>Cascaded Control Loops</h4>
+<p>High-performance drive systems use nested loops where the inner loop output becomes the outer loop's setpoint:</p>
+<div class="hl">
+<strong>Position loop</strong> (outer, ~10 Hz): setpoint = target position → output = velocity reference<br>
+<strong>Speed loop</strong> (middle, ~100 Hz): setpoint = velocity → output = current reference<br>
+<strong>Current loop</strong> (inner, ~1–10 kHz): setpoint = current → output = PWM duty cycle<br><br>
+Rule: each inner loop must be <strong>3–10× faster</strong> than the loop above it.
+</div>
+
+<h4>Thermal Calculations ⭐ (Open Questions on Exam)</h4>
+<p>The three-step thermal calculation appears every year as an open question:</p>
+<div class="hl">
+<strong>Step 1:</strong> Maximum allowable losses: $P_{total} = \Delta T_{max} / R_{th}$<br>
+<strong>Step 2:</strong> Copper losses available: $P_{cu} = P_{total} - P_{nl}$ (subtract no-load losses)<br>
+<strong>Step 3:</strong> Nominal current: $I_{nom} = \sqrt{P_{cu} / R_r}$
+</div>
+<div class="th ex"><div class="ex-title">📐 Example — Nominal Current (Isolation Class H)</div>
+$\Delta T_{max} = 180°C$, $R_{th} = 2°C/W$, $R_r = 1.5\,\Omega$, $P_{nl} = 18\,\text{W}$<br>
+$P_{total} = 180/2 = 90\,\text{W}$<br>
+$P_{cu} = 90 - 18 = 72\,\text{W}$<br>
+$I_{nom} = \sqrt{72/1.5} = \sqrt{48} \approx \mathbf{6.93\,\text{A}}$
+</div>
+<div class="hl">Thermal transient — time to reach temperature $\Delta T$:<br>
+$$t = -\tau_{th} \ln\!\left(1 - \frac{\Delta T}{\Delta T_\infty}\right) \qquad \text{where } \Delta T_\infty = P_{total} \times R_{th}$$</div>
+
+<h4>Regenerative Braking</h4>
+<ul>
+<li>Motor acts as generator — kinetic energy returned to the DC bus</li>
+<li>Requires a <em>4-quadrant drive</em> (H-bridge or active rectifier) to accept return current</li>
+<li>Even with regeneration: $I^2 R_r$ copper losses still heat the rotor during braking</li>
+</ul>
+
+<h4>📺 Watch — PID Controller Explained</h4>
+<a class="yt-thumb" href="https://www.youtube.com/watch?v=fv6dLTEvl74" target="_blank" rel="noopener"><img src="https://img.youtube.com/vi/fv6dLTEvl74/hqdefault.jpg" alt="" loading="lazy"><div class="yt-play"></div></a>
+<p class="yt-label">▶ PID Controller Explained — RealPars (industrial automation)</p>
+</div>`
+};
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let page = 'home', tab = 'theory';
+const answered = {};   // qid → index chosen
+const fcIndex  = {};   // topicId → current card index
+let examTimer = null, examSecs = 90*60;
+
+// ─────────────────────────────────────────────
+// OPEN ANSWER CHECKING
+// ─────────────────────────────────────────────
+function isCorrect(q) {
+  const ua = answered[q.id];
+  if (ua === undefined) return false;
+  if (q.type === 'open') {
+    if (q.subtype === 'number') {
+      const num = parseFloat(String(ua).replace(',', '.'));
+      if (isNaN(num)) return false;
+      return Math.abs(num - q.ans_val) / Math.abs(q.ans_val) <= (q.tolerance || 0.1);
+    } else {
+      const lower = String(ua).toLowerCase();
+      const hits = (q.keywords||[]).filter(kw => lower.includes(kw.toLowerCase()));
+      return hits.length >= (q.minKeywords || 2);
+    }
+  }
+  return ua === q.ans;
+}
+
+function answerOpen(qid, tid) {
+  if (answered[qid] !== undefined) return;
+  const input = document.getElementById('oa_'+qid);
+  if (!input || !input.value.trim()) return;
+  answered[qid] = input.value.trim();
+  updateProgress();
+  const qs = tid==='exam' ? Object.values(QB).flat() : (QB[tid]||[]);
+  const renderEl = document.getElementById('content');
+  if (page==='exam') renderExam(renderEl);
+  else renderQuiz(renderEl, qs, tid);
+  setTimeout(()=>{ const el=document.getElementById('qb_'+qid); if(el) el.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 80);
+}
+
+// ─────────────────────────────────────────────
+// PROGRESS
+// ─────────────────────────────────────────────
+function calcProgress() {
+  const tids = ['t1','t2','t3','t4','t5','t6','t7'];
+  let total=0, correct=0;
+  tids.forEach(tid => {
+    (QB[tid]||[]).forEach(q => {
+      total++;
+      if (isCorrect(q)) correct++;
+    });
+  });
+  return {total, correct};
+}
+function updateProgress() {
+  const {total, correct} = calcProgress();
+  const pct = total ? Math.round(100*correct/total) : 0;
+  document.getElementById('pbf').style.width = pct+'%';
+  document.getElementById('pbl').textContent = correct+' / '+total+' questions mastered';
+}
+
+// ─────────────────────────────────────────────
+// SIDEBAR
+// ─────────────────────────────────────────────
+function buildSidebar() {
+  const nav = document.getElementById('nav');
+  nav.innerHTML = '';
+  TOPICS.forEach(t => {
+    const qs = QB[t.id]||[];
+    const done = qs.length ? qs.filter(q=>isCorrect(q)).length : 0;
+    const d = document.createElement('div');
+    d.className = 'ni'+(page===t.id?' active':'');
+    d.onclick = () => navigate(t.id);
+    d.innerHTML = `<span class="nn">${t.num||t.icon}</span>
+      <span style="flex:1">${t.label}</span>
+      ${qs.length ? `<span class="nct">${done}/${qs.length}</span>` : ''}`;
+    nav.appendChild(d);
+  });
+}
+
+// ─────────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────────
+function navigate(id) {
+  page = id;
+  tab = (id==='home'||id==='exam') ? 'quiz' : 'theory';
+  buildSidebar();
+  renderTopbar();
+  renderContent();
+  document.getElementById('content').scrollTop = 0;
+}
+
+function setTab(t) {
+  tab = t;
+  renderTopbar();
+  renderContent();
+}
+
+// ─────────────────────────────────────────────
+// TOPBAR
+// ─────────────────────────────────────────────
+function renderTopbar() {
+  const t = TOPICS.find(x=>x.id===page);
+  document.getElementById('tbtitle').textContent = (t?t.icon+' '+t.label:'');
+  const tabs = document.getElementById('tabs');
+  if (page==='home'||page==='exam') { tabs.innerHTML=''; return; }
+  const defs = [
+    {k:'theory',   label:'📚 Theory'},
+    {k:'flash',    label:'🃏 Flashcards'},
+    {k:'quiz',     label:'🎯 Quiz'},
+    {k:'formulas', label:'🔢 Formulas'},
+  ];
+  tabs.innerHTML = defs.map(d=>
+    `<button class="tb${tab===d.k?' active':''}" onclick="setTab('${d.k}')">${d.label}</button>`
+  ).join('');
+}
+
+// ─────────────────────────────────────────────
+// MAIN RENDER DISPATCH
+// ─────────────────────────────────────────────
+function renderContent() {
+  const el = document.getElementById('content');
+  if (page==='home') { renderHome(el); return; }
+  if (page==='exam') { renderExam(el); return; }
+  switch(tab) {
+    case 'theory':   renderTheory(el); break;
+    case 'flash':    renderFlash(el);  break;
+    case 'quiz':     renderQuiz(el, QB[page]||[], page); break;
+    case 'formulas': renderFormulas(el); break;
+  }
+}
+
+// ─────────────────────────────────────────────
+// HOME
+// ─────────────────────────────────────────────
+function renderHome(el) {
+  const {total, correct} = calcProgress();
+  el.innerHTML = `
+  <div class="hero">
+    <h2>⚡ EDS4 — Electrical Drive Systems 4</h2>
+    <p>Your complete interactive study guide with real exam questions, circuit diagrams, flashcards, and step-by-step calculations. Fontys University · Mechatronics · Semester 4</p>
+    <div class="badges">
+      <span class="badge b2">📝 13 MC + 4 Open Questions per exam</span>
+      <span class="badge b3">📐 Formula sheet provided</span>
+      <span class="badge b4">🧮 Calculator allowed</span>
+      <span class="badge b1">Grade = 1.0 + points/10</span>
+    </div>
+  </div>
+  <div class="scorebar" style="margin-bottom:18px">
+    <div class="sc"><div class="sv">${correct}</div><div class="sl">Correct</div></div>
+    <div class="sc"><div class="sv">${total}</div><div class="sl">Total Qs</div></div>
+    <div class="sc"><div class="sv" style="color:${total?correct/total>=.7?'var(--green)':'var(--red)':'var(--cyan)'}">${total?Math.round(100*correct/total):0}%</div><div class="sl">Mastered</div></div>
+    <button class="btn btn-p" style="margin-left:auto" onclick="navigate('exam')">📝 Take Full Exam</button>
+  </div>
+  <div class="divider"><span>Select a topic</span></div>
+  <div class="tg">${['t1','t2','t3','t4','t5','t6','t7'].map(id=>{
+    const t=TOPICS.find(x=>x.id===id);
+    const qs=QB[id]||[]; const done=qs.filter(q=>isCorrect(q)).length;
+    const pct=qs.length?Math.round(100*done/qs.length):0;
+    return `<div class="tc" onclick="navigate('${id}')">
+      <div class="tn">${t.icon} Topic ${t.num} · ${t.ch||''}</div>
+      <div class="tt">${t.label}</div>
+      <div class="td">${qs.length} questions</div>
+      <div class="tq">${done}/${qs.length} correct · ${pct}%</div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+// ─────────────────────────────────────────────
+// MATH HELPER — auto-render $...$ and $$...$$ in any element
+// ─────────────────────────────────────────────
+function applyMath(el) {
+  if (typeof renderMathInElement !== 'undefined') {
+    renderMathInElement(el, {
+      delimiters:[
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false},
+      ],
+      throwOnError: false,
+    });
+  } else {
+    // auto-render not loaded yet — retry
+    setTimeout(()=>applyMath(el), 300);
+  }
+}
+
+// ─────────────────────────────────────────────
+// THEORY
+// ─────────────────────────────────────────────
+function renderTheory(el) {
+  const t = TOPICS.find(x=>x.id===page);
+  el.innerHTML = `<div class="card"><h3>📚 Theory — ${t.label}</h3>${THEORY[page]||'<p style="color:var(--text2)">Theory coming soon.</p>'}</div>`;
+  applyMath(el);
+}
+
+// ─────────────────────────────────────────────
+// FLASHCARDS
+// ─────────────────────────────────────────────
+function renderFlash(el) {
+  const cards = FLASHCARDS[page]||[];
+  if (!cards.length) { el.innerHTML='<div class="card"><h3>🃏 Flashcards</h3><p style="color:var(--text2)">No flashcards for this topic yet.</p></div>'; return; }
+  if (!fcIndex[page]) fcIndex[page]=0;
+  const idx = fcIndex[page];
+  const c = cards[idx];
+  el.innerHTML = `
+  <div class="card">
+    <h3>🃏 Flashcards — ${TOPICS.find(x=>x.id===page).label}</h3>
+    <p class="fc-hint">Click card to flip • ${idx+1} of ${cards.length}</p>
+    <div class="fc-wrap" onclick="flipCard(this)">
+      <div class="fc" id="fc-main">
+        <div class="fc-f"><div class="ft">${c.f}</div></div>
+        <div class="fc-b"><div class="bt" id="fc-back">${c.b}</div></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px;justify-content:center">
+      <button class="btn btn-o" onclick="fcNav(-1)">← Prev</button>
+      <button class="btn btn-o" onclick="fcShuffle()">🔀 Shuffle</button>
+      <button class="btn btn-o" onclick="fcNav(1)">Next →</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:14px">
+      ${cards.map((cc,i)=>`<div onclick="fcGo(${i})" style="width:28px;height:28px;border-radius:50%;background:${i===idx?'var(--accent)':'var(--bg3)'};border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:${i===idx?'#fff':'var(--text2)'}">${i+1}</div>`).join('')}
+    </div>
+  </div>`;
+  // Render math in front and back of card
+  const back = document.getElementById('fc-back');
+  if (back) applyMath(back);
+}
+
+function flipCard(wrap) {
+  const fc = document.getElementById('fc-main');
+  if (fc) fc.classList.toggle('flip');
+}
+function fcNav(dir) {
+  const cards = FLASHCARDS[page]||[];
+  fcIndex[page] = ((fcIndex[page]||0) + dir + cards.length) % cards.length;
+  renderContent();
+}
+function fcGo(i) { fcIndex[page]=i; renderContent(); }
+function fcShuffle() {
+  const cards = FLASHCARDS[page]||[];
+  fcIndex[page] = Math.floor(Math.random()*cards.length);
+  renderContent();
+}
+
+// ─────────────────────────────────────────────
+// QUIZ ENGINE
+// ─────────────────────────────────────────────
+function openResultHTML(q) {
+  const ua = answered[q.id];
+  const ok = isCorrect(q);
+  if (q.subtype === 'number') {
+    return `<div class="open-result ${ok?'ok':'bad'}">
+      <div class="or-header">${ok?'✅ Correct!':'❌ Incorrect'}</div>
+      Your answer: <strong>${ua} ${q.unit||''}</strong> — Expected: <strong>${q.ans_val} ${q.unit||''}</strong>
+      <div class="open-model"><strong>Solution steps</strong>
+        <p>${(q.steps||[]).map(s=>`<em>${s.n}:</em> ${s.f}`).join(' → ')}</p>
+        <p>${q.explanation||''}</p>
+      </div>
+    </div>`;
+  } else {
+    const lower = String(ua).toLowerCase();
+    const kwHtml = (q.keywords||[]).map(kw=>{
+      const hit = lower.includes(kw.toLowerCase());
+      return `<span class="kw-tag ${hit?'kw-hit':'kw-miss'}">${kw}</span>`;
+    }).join('');
+    return `<div class="open-result ${ok?'ok':'bad'}">
+      <div class="or-header">${ok?'✅ Good answer! Key concepts found:':'❌ Missing key concepts:'}</div>
+      <div style="margin:6px 0">${kwHtml}</div>
+      <div class="open-yours"><em>Your answer:</em> ${ua}</div>
+      <div class="open-model"><strong>Model Answer</strong><p>${q.ans_text||q.explanation||''}</p></div>
+    </div>`;
+  }
+}
+
+function openInputHTML(q, tid) {
+  if (q.subtype === 'number') {
+    return `<div class="open-num-wrap">
+      <input type="text" class="open-num" id="oa_${q.id}" placeholder="0.000" inputmode="decimal">
+      <span class="open-unit">${q.unit||''}</span>
+      <button class="btn btn-p" onclick="answerOpen('${q.id}','${tid}')">Submit</button>
+    </div>`;
+  } else {
+    return `<div class="open-area">
+      <textarea class="open-input" id="oa_${q.id}" placeholder="Write your answer here — explain your reasoning..." rows="5"></textarea>
+      <div style="margin-top:6px;display:flex;gap:8px;align-items:center">
+        <button class="btn btn-p" onclick="answerOpen('${q.id}','${tid}')">Submit Answer</button>
+        <span style="font-size:.72rem;color:var(--text2)">Key concepts will be checked automatically</span>
+      </div>
+    </div>`;
+  }
+}
+
+function renderQuiz(el, qs, tid) {
+  if (!qs.length) { el.innerHTML='<div class="card"><h3>🎯 Quiz</h3><p style="color:var(--text2)">No questions yet for this topic.</p></div>'; return; }
+  const done = qs.filter(q=>answered[q.id]!==undefined).length;
+  const correct = qs.filter(q=>isCorrect(q)).length;
+  const t = TOPICS.find(x=>x.id===tid)||{label:'All Topics'};
+
+  let html = `<div class="card"><h3>🎯 Quiz — ${t.label}</h3>`;
+  if (done>0) {
+    const pct = Math.round(100*correct/qs.length);
+    html += `<div class="scorebar">
+      <div class="sc"><div class="sv">${correct}/${qs.length}</div><div class="sl">Correct</div></div>
+      <div class="sc"><div class="sv">${done}/${qs.length}</div><div class="sl">Answered</div></div>
+      <div class="sc"><div class="sv" style="color:${pct>=70?'var(--green)':'var(--red)'}">${pct}%</div><div class="sl">Score</div></div>
+      <button class="btn btn-o" style="margin-left:auto" onclick="resetQuiz('${tid}')">↺ Reset</button>
+    </div>`;
+  }
+
+  qs.forEach((q, qi) => {
+    const ua = answered[q.id];
+    const isAnswered = ua !== undefined;
+    const typeLabel = q.type==='calc'?'<span class="qtype calc">CALC</span>'
+      :q.type==='diag'?'<span class="qtype diag">DIAGRAM</span>'
+      :q.type==='open'?'<span class="qtype open">OPEN</span>':'';
+
+    html += `<div class="qbox" id="qb_${q.id}">
+      <div class="qhead">
+        <span class="qnum">Q${qi+1}</span>
+        <span class="qsrc">${q.src} · Q${q.n}</span>
+        ${typeLabel}
+        <span style="flex:1;margin-left:8px" class="qtxt">${q.text.replace(/\n/g,'<br>')}</span>
+      </div>
+      <div class="qbody">
+        ${q.svg ? `<div class="qdiag">${SVG[q.svg]||''}</div>` : ''}
+        ${q.type==='open' ? (isAnswered ? openResultHTML(q) : openInputHTML(q,tid)+hintHTML(q.id))
+          : `<div class="opts">
+          ${q.opts.map((opt,oi)=>{
+            let cls='opt';
+            if(isAnswered){ cls+=' dis'; if(oi===q.ans) cls+=' ok'; else if(oi===ua) cls+=' bad'; }
+            return `<div class="${cls}" onclick="answer('${q.id}',${oi},${q.ans},'${tid}')">
+              <span class="ol">${String.fromCharCode(65+oi)})</span><span>${opt}</span>
+            </div>`;
+          }).join('')}
+        </div>
+        ${!isAnswered ? hintHTML(q.id) : ''}
+        <div class="exp${isAnswered?' show':''}" id="exp_${q.id}">${q.explanation||''}</div>
+        ${isAnswered && q.steps ? `<div class="steps">${q.steps.map(s=>`<div class="step"><div class="sn">${s.n}</div><code class="sf">${s.f}</code></div>`).join('')}</div>` : ''}`}
+      </div>
+    </div>`;
+  });
+
+  html += `<div style="display:flex;gap:8px;margin-top:4px">
+    <button class="btn btn-o" onclick="resetQuiz('${tid}')">↺ Reset Quiz</button>
+  </div></div>`;
+  el.innerHTML = html;
+}
+
+function answer(qid, chosen, correct, tid) {
+  if (answered[qid] !== undefined) return;
+  answered[qid] = chosen;
+  updateProgress();
+  // Re-render
+  const qs = tid==='exam_all' ? Object.values(QB).flat() : (QB[tid]||[]);
+  renderQuiz(document.getElementById('content'), qs, tid==='exam_all'?'exam':tid);
+  // Scroll to question
+  setTimeout(()=>{ const el=document.getElementById('qb_'+qid); if(el) el.scrollIntoView({behavior:'smooth',block:'nearest'}); },80);
+}
+
+function resetQuiz(tid) {
+  const qs = QB[tid]||[];
+  qs.forEach(q=>delete answered[q.id]);
+  updateProgress();
+  renderContent();
+}
+
+// ─────────────────────────────────────────────
+// FORMULAS
+// ─────────────────────────────────────────────
+const FMLS = {
+t1:[
+  {f:'P = T \\cdot \\omega',desc:'Mechanical power (W = N·m × rad/s)'},
+  {f:'\\eta = \\dfrac{P_{out}}{P_{in}}',desc:'Efficiency'},
+  {f:'\\omega = \\dfrac{n \\cdot 2\\pi}{60}',desc:'RPM → rad/s'},
+  {f:'\\omega_{load} = \\dfrac{\\omega_{motor}}{N}',desc:'Speed after gearbox'},
+  {f:'T_{load} = T_{motor} \\cdot N \\cdot \\eta',desc:'Torque after gearbox'},
+  {f:'J_{ref} = \\dfrac{J_{load}}{N^2}',desc:'Reflected inertia — N² rule!'},
+  {f:'N_{opt} = \\sqrt{\\dfrac{J_{load}}{J_{motor}}}',desc:'Optimal gear ratio'},
+  {f:'\\Delta T = P \\cdot R_{th}',desc:'Steady-state temperature rise'},
+  {f:'T(t) = \\Delta T_{\\infty}\\left(1 - e^{-t/\\tau}\\right)',desc:'Thermal transient'},
+],
+t2:[
+  {f:'\\text{Res} = 4 \\times \\text{PPR}',desc:'Quadrature encoder resolution'},
+  {f:'V_{out} = V_{ref} + S \\cdot I',desc:'ACS712 Hall sensor output'},
+  {f:'V_{out} = V_{ref} + S \\cdot \\dfrac{I}{N_p}',desc:'LEM closed-loop sensor'},
+  {f:'V_H = \\dfrac{I \\cdot B}{n \\cdot e \\cdot d}',desc:'Hall voltage formula'},
+  {f:'\\delta = \\sqrt{\\dfrac{2\\rho}{\\omega\\mu}}',desc:'Skin depth'},
+],
+t3:[
+  {f:'V = E + I R + L\\dfrac{dI}{dt}',desc:'DC motor KVL equation'},
+  {f:'E = k \\cdot \\omega',desc:'Back-EMF'},
+  {f:'T = k \\cdot I',desc:'Motor torque'},
+  {f:'\\omega = \\dfrac{V - IR}{k}',desc:'Motor speed (steady state)'},
+  {f:'\\tau_e = \\dfrac{L}{R}',desc:'Electrical time constant'},
+  {f:'\\tau_m = \\dfrac{J \\cdot R}{k^2}',desc:'Mechanical time constant'},
+  {f:'\\theta = \\dfrac{360°}{N_{steps}}',desc:'Stepper motor step angle'},
+  {f:'I_{stall} = \\dfrac{V}{R}',desc:'Stall current (ω = 0, E = 0)'},
+  {f:'T_{stall} = k \\cdot I_{stall}',desc:'Stall torque'},
+],
+t4:[
+  {f:'V_{avg} = D \\cdot V_{dc}',desc:'PWM average voltage (D = duty cycle)'},
+  {f:'\\Delta I = \\dfrac{V_{dc} \\cdot D(1-D)}{L \\cdot f_{PWM}}',desc:'Motor current ripple'},
+  {f:'f_c = \\dfrac{1}{2\\pi RC}',desc:'RC low-pass filter cutoff frequency'},
+],
+t5:[
+  {f:'Z_0 = \\sqrt{\\dfrac{L\'}{C\'}}',desc:'Transmission line characteristic impedance'},
+  {f:'v_p = \\dfrac{1}{\\sqrt{L\'C\'}}',desc:'Signal propagation velocity'},
+  {f:'\\Gamma = \\dfrac{Z_L - Z_0}{Z_L + Z_0}',desc:'Reflection coefficient'},
+  {f:'L\' = Z_0^2 \\cdot C\'',desc:'Inductance/m from datasheet'},
+  {f:'\\ell = v_p \\cdot t_d',desc:'Cable length from propagation delay'},
+  {f:'\\ell_{crit} = 0.1 \\cdot v_p \\cdot t_{rise}',desc:'TL effects threshold (10% rule)'},
+  {f:'V_{avg} = \\dfrac{V_{pk}}{2\\pi}(1 + \\cos\\alpha)',desc:'Half-wave controlled rectifier (SCR)'},
+  {f:'\\delta = \\sqrt{\\dfrac{2\\rho}{\\omega\\mu}}',desc:'Skin depth (current penetration)'},
+],
+t6:[
+  {f:'I_B = \\dfrac{V_{in} - V_{BE}}{R_B}',desc:'BJT base drive current'},
+  {f:'I_{B,min} = \\dfrac{I_C}{\\beta}',desc:'Minimum base current for saturation'},
+  {f:'R_{LED} = \\dfrac{V_{cc} - V_F}{I_F}',desc:'Optocoupler LED series resistor'},
+],
+t7:[
+  {f:'t_{acc} = \\dfrac{v_{max}}{a_{max}}',desc:'Acceleration phase duration'},
+  {f:'x_{acc} = \\tfrac{1}{2} a\\, t^2',desc:'Distance covered during acceleration'},
+  {f:'P_{total} = \\dfrac{\\Delta T_{max}}{R_{th}}',desc:'Maximum allowable power loss'},
+  {f:'I_{nom} = \\sqrt{\\dfrac{P_{total} - P_{nl}}{R_r}}',desc:'Nominal rotor current'},
+  {f:'\\Delta T_{OL} = P_{OL} \\cdot R_{th}',desc:'Temperature rise at overload'},
+  {f:'t = -\\tau \\ln\\!\\left(1 - \\dfrac{\\Delta T}{\\Delta T_{\\infty}}\\right)',desc:'Time to reach a given temperature'},
+]};
+
+function renderFormulas(el) {
+  const fmls = FMLS[page]||[];
+  const t = TOPICS.find(x=>x.id===page);
+  el.innerHTML = `<div class="card"><h3>🔢 Formulas — ${t.label}</h3>
+    <div class="fg">${fmls.map((f,i)=>`<div class="fb"><div class="ff" id="fml_${page}_${i}"></div><div class="fd">${f.desc}</div></div>`).join('')}
+    </div></div>`;
+  // Render KaTeX into each placeholder
+  if (typeof katex !== 'undefined') {
+    fmls.forEach((f,i) => {
+      const el2 = document.getElementById(`fml_${page}_${i}`);
+      if (el2) try {
+        katex.render(f.f, el2, {displayMode:true, throwOnError:false});
+      } catch(e) { el2.textContent = f.f; }
+    });
+  } else {
+    // KaTeX not loaded yet — show plain text and retry
+    fmls.forEach((f,i)=>{
+      const el2=document.getElementById(`fml_${page}_${i}`);
+      if(el2) el2.textContent=f.f;
+    });
+    setTimeout(()=>renderFormulas(el),500);
+  }
+}
+
+// ─────────────────────────────────────────────
+// FORMULA SHEET DATA  (used by the panel)
+// ─────────────────────────────────────────────
+const FORMULA_SHEET = [
+  {section:'Drive Systems & Gearbox', formulas:[
+    {id:'f_power',  latex:'P = T \\cdot \\omega',                              label:'Mechanical power'},
+    {id:'f_eff',    latex:'\\eta = P_{out}/P_{in}',                            label:'Efficiency'},
+    {id:'f_rpm',    latex:'\\omega = n \\cdot 2\\pi/60',                       label:'RPM → rad/s'},
+    {id:'f_jref',   latex:'J_{ref} = J_{load}/N^2',                            label:'Reflected inertia (N² rule)'},
+    {id:'f_tload',  latex:'T_{load} = T_{motor} \\cdot N \\cdot \\eta',        label:'Output torque'},
+    {id:'f_nopt',   latex:'N_{opt} = \\sqrt{J_{load}/J_{motor}}',              label:'Optimal gear ratio'},
+  ]},
+  {section:'Thermal Model', formulas:[
+    {id:'f_dt_ss',  latex:'\\Delta T = P \\cdot R_{th}',                       label:'Steady-state ΔT'},
+    {id:'f_trans',  latex:'T(t) = \\Delta T_\\infty(1-e^{-t/\\tau_{th}})',     label:'Thermal transient'},
+    {id:'f_t_time', latex:'t = -\\tau_{th}\\ln(1-\\Delta T/\\Delta T_\\infty)',label:'Time to reach ΔT'},
+    {id:'f_inom',   latex:'I_{nom} = \\sqrt{(P_{total}-P_{nl})/R_r}',          label:'Nominal current'},
+    {id:'f_pcu',    latex:'P_{cu} = I^2 R_r',                                  label:'Copper losses'},
+  ]},
+  {section:'DC Motor', formulas:[
+    {id:'f_kvl',    latex:'V = E + IR + L\\,dI/dt',                            label:'KVL equation'},
+    {id:'f_emf',    latex:'E = k \\cdot \\omega',                              label:'Back-EMF'},
+    {id:'f_torq',   latex:'T = k \\cdot I',                                    label:'Motor torque'},
+    {id:'f_speed',  latex:'\\omega = (V - IR)/k',                              label:'Steady-state speed'},
+    {id:'f_te',     latex:'\\tau_e = L/R',                                     label:'Electrical τ'},
+    {id:'f_tm',     latex:'\\tau_m = JR/k^2',                                  label:'Mechanical τ'},
+    {id:'f_stall',  latex:'I_{stall} = V/R \\;\\Rightarrow\\; T_{stall} = kI_{stall}', label:'Stall current & torque'},
+  ]},
+  {section:'PWM & H-Bridge', formulas:[
+    {id:'f_vavg',   latex:'V_{avg} = D \\cdot V_{dc}',                         label:'Average voltage'},
+    {id:'f_ripple', latex:'\\Delta I = V_{dc}D(1-D)/(Lf_{PWM})',               label:'Current ripple'},
+    {id:'f_rc',     latex:'f_c = 1/(2\\pi RC)',                                 label:'RC filter cutoff'},
+  ]},
+  {section:'SCR & Rectifier', formulas:[
+    {id:'f_scr',    latex:'V_{avg} = \\dfrac{V_{pk}}{2\\pi}(1+\\cos\\alpha)',  label:'Half-wave rectifier'},
+  ]},
+  {section:'Transmission Lines & EMC', formulas:[
+    {id:'f_z0',     latex:'Z_0 = \\sqrt{L\'/C\'}',                             label:'Char. impedance'},
+    {id:'f_vp',     latex:'v_p = 1/\\sqrt{L\'C\'}',                            label:'Signal velocity'},
+    {id:'f_gamma',  latex:'\\Gamma = (Z_L-Z_0)/(Z_L+Z_0)',                     label:'Reflection coeff.'},
+    {id:'f_lp',     latex:"L' = Z_0^2 \\cdot C'",                              label:'L\' from datasheet'},
+    {id:'f_len',    latex:'\\ell = v_p \\cdot t_d',                            label:'Length from delay'},
+    {id:'f_10pct',  latex:'\\ell_{crit} = 0.1 \\cdot v_p \\cdot t_{rise}',    label:'TL 10% rule'},
+    {id:'f_skin',   latex:'\\delta = \\sqrt{2\\rho/(\\omega\\mu)}',            label:'Skin depth'},
+  ]},
+  {section:'Sensors', formulas:[
+    {id:'f_hall',   latex:'V_{out} = V_{ref} + S \\cdot I',                    label:'Hall sensor'},
+    {id:'f_lem',    latex:'V_{out} = V_{ref} + S \\cdot I/N_p',                label:'LEM closed-loop'},
+    {id:'f_quad',   latex:'\\text{Res} = 4 \\times \\text{PPR}',              label:'Quad. encoder res.'},
+  ]},
+  {section:'Interfacing', formulas:[
+    {id:'f_ib',     latex:'I_B = (V_{in}-V_{BE})/R_B',                         label:'BJT base current'},
+    {id:'f_rled',   latex:'R_{LED} = (V_{cc}-V_F)/I_F',                        label:'Opto LED resistor'},
+  ]},
+  {section:'Motion Control', formulas:[
+    {id:'f_tacc',   latex:'t_{acc} = v_{max}/a_{max}',                         label:'Accel. time'},
+    {id:'f_xacc',   latex:'x_{acc} = \\tfrac{1}{2}at^2',                       label:'Accel. distance'},
+  ]},
+];
+
+// Per-question hints: text shown + formula IDs to highlight in panel
+const HINTS = {
+  t1q1:{text:'Apply the N² rule: J_ref = J_load/N². At N_opt the reflected load inertia equals motor inertia.', ids:['f_jref','f_nopt']},
+  t1q2:{text:'N_opt = √(J_load/J_motor) = √(0.009/0.001)', ids:['f_nopt']},
+  t1q3:{text:'T_load = T_motor × N × η', ids:['f_tload']},
+  t1q4:{text:'ω = n × 2π/60 — convert RPM to rad/s.', ids:['f_rpm']},
+  t1q5:{text:'T = P/ω — first convert RPM to rad/s.', ids:['f_power','f_rpm']},
+  t1q6:{text:'N_opt = √(J_load/J_motor)', ids:['f_nopt']},
+  t1q7:{text:'Does a gearbox always improve η? Think about friction losses.', ids:['f_eff','f_jref']},
+  t2q1:{text:'High-precision encoders use the Moiré fringe principle with two gratings.', ids:['f_quad']},
+  t2q2:{text:'Can you determine direction from A and B alone, without Z?', ids:['f_quad']},
+  t2q3:{text:'Thermocouple: Seebeck effect generates a VOLTAGE, not a current. Classic trap!', ids:[]},
+  t2q4:{text:'Hall voltage: V_H = (I_ctrl × B)/(n·e·d). Control current + B field → voltage.', ids:['f_hall']},
+  t2q5:{text:'Zero-flux condition: N₁I₁ = N₂I₂. Which statement violates this?', ids:['f_lem']},
+  t2q6:{text:'V_out = V_ref + S×I. Use S = 185 mV/A, V_ref = 2.5V.', ids:['f_hall']},
+  t2q7:{text:'Quadrature counts all 4 edges per PPR cycle.', ids:['f_quad']},
+  t2q8:{text:'Which sensor principle requires changing magnetic flux to work?', ids:[]},
+  t3q1:{text:'Which motor type runs full current even when stationary → poor thermal.', ids:['f_pcu']},
+  t3q2:{text:'No-load: I≈0, so E≈V. ω₀ = V/k', ids:['f_speed','f_emf']},
+  t3q3:{text:'ω = (V − I×R)/k. Substitute V=24, I=4, R=3, k=0.08.', ids:['f_speed']},
+  t3q4:{text:'θ = 360° / N_steps', ids:[]},
+  t3q5:{text:'τ_e = L/R', ids:['f_te']},
+  t3q6:{text:'At stall: ω=0 → E=0. All voltage drives current: I=V/R. Then T=k×I.', ids:['f_stall','f_torq']},
+  t3q7:{text:'BLDC has no brushes — who/what does the commutation job instead?', ids:[]},
+  t4q1:{text:'The inductor opposes rapid current changes: ΔI = V·Δt/L.', ids:['f_ripple']},
+  t4q2:{text:'V_avg = D × V_dc. D = 75% = 0.75.', ids:['f_vavg']},
+  t4q3:{text:'Q1 and Q3 are both on the LEFT side. What happens when both left switches conduct?', ids:[]},
+  t4q4:{text:'V_th = the gate voltage at which drain current just starts flowing (x-intercept).', ids:[]},
+  t4q5:{text:'Without RC, gate sees a square wave. MOSFET switches ON/OFF instead of linear region.', ids:['f_rc']},
+  t4q6:{text:'In saturation, IDS is controlled by VGS and limited by the external circuit, not VDS.', ids:[]},
+  t5q1:{text:'10% rule: consider TL effects when ℓ ≥ 0.1 × v_p × t_rise.', ids:['f_10pct']},
+  t5q2:{text:"L' = Z₀² × C'. Use Z₀=50Ω, C'=216 pF/m.", ids:['f_lp']},
+  t5q3:{text:'ℓ = v_p × t_d.', ids:['f_len']},
+  t5q4:{text:'Γ = (Z_L − Z₀)/(Z_L + Z₀). Substitute Z_L=150, Z₀=50.', ids:['f_gamma']},
+  t5q5:{text:'Once latched ON, the gate cannot turn off an SCR. What is needed in DC circuits?', ids:[]},
+  t5q6:{text:'EMC model: Source → Coupling Path → Victim. Which of the three do you need to break?', ids:[]},
+  t5q7:{text:'Skin depth δ = √(2ρ/ωμ). What happens to δ as frequency increases?', ids:['f_skin']},
+  t5q8:{text:'V_avg = (V_pk/2π)(1+cosα). V_pk = 230√2.', ids:['f_scr']},
+  t5q9:{text:'Which approach targets the coupling path (not the source or victim)?', ids:[]},
+  t6q1:{text:'What voltage range do the diodes clamp the input to?', ids:[]},
+  t6q2:{text:'Typical motion controller digital output in source mode: ~4 mA.', ids:[]},
+  t6q3:{text:'A TRIAC turns OFF only at a zero-crossing. Does DC have zero-crossings?', ids:[]},
+  t6q4:{text:'CNY17: LED OFF → phototransistor OFF → output = Vcc (pull-up). Output is INVERTED.', ids:[]},
+  t6q5:{text:'Positive feedback creates hysteresis (two thresholds). What is Vin=4V relative to the thresholds?', ids:[]},
+  t6q6:{text:'Both statements are about Schmitt trigger behaviour. Positive feedback → hysteresis.', ids:[]},
+  t6q7:{text:'R = (V_supply − V_F) / I_F', ids:['f_rled']},
+  t7q1:{text:'Which velocity profile is truly time-optimal for bounded acceleration?', ids:['f_tacc']},
+  t7q2:{text:'Integral term: eliminates steady-state error. Feedforward: open-loop, no effect on stability.', ids:[]},
+  t7q3:{text:'t_acc = v_max / a_max', ids:['f_tacc']},
+  t7q4:{text:'Step 1: P_total = ΔT_max/R_th. Step 2: P_cu = P_total − P_nl. Step 3: I = √(P_cu/R_r).', ids:['f_dt_ss','f_inom','f_pcu']},
+  t7q5:{text:'P_OL = I_OL² × R_r. Then ΔT = P × R_th.', ids:['f_pcu','f_dt_ss']},
+  t7q6:{text:'The innermost control loop must be the fastest.', ids:[]},
+  t7q7:{text:'t = −τ × ln(1 − ΔT/ΔT_∞). Compute ΔT_∞ = I²×R_r×R_th first.', ids:['f_t_time','f_dt_ss','f_pcu']},
+  t7q8:{text:'Same method: P_total=ΔT_max/R_th → P_cu=P_total−P_nl → I=√(P_cu/R_r).', ids:['f_dt_ss','f_inom','f_pcu']},
+  // Open question hints
+  t1open1:{text:'J_ref = J_load / N². Substitute N=4, J_load=0.016. N²=16.', ids:['f_jref']},
+  t3open1:{text:'ω = (V − I×R) / k. Substitute V=24, I=3, R=2, k=0.15.', ids:['f_speed']},
+  t4open1:{text:'RC filter = low-pass filter. PWM is a square wave. What does a low-pass do to a square wave? Think: DC average = D × V_supply.', ids:['f_duty']},
+  t4open2:{text:'Without RC: the gate sees the raw square wave. The MOSFET either fully ON or fully OFF. What does that mean for Ids?', ids:[]},
+  t7open1:{text:'Step 1: P_total = ΔT_max/R_th. Step 2: P_cu = P_total − P_nl. Step 3: I_nom = √(P_cu/R_r).', ids:['f_dt_ss','f_pcu','f_inom']},
+  t7open2:{text:'P_cu = I_OL² × R_r, then P_total = P_cu + P_nl, then ΔT = P_total × R_th.', ids:['f_pcu','f_dt_ss']},
+};
+
+// ─────────────────────────────────────────────
+// FULL EXAM
+// ─────────────────────────────────────────────
+function renderExam(el) {
+  const allQ = Object.values(QB).flat();
+  // Start timer if not running
+  if (!examTimer) {
+    examTimer = setInterval(()=>{
+      examSecs--;
+      const m = String(Math.floor(examSecs/60)).padStart(2,'0');
+      const s = String(examSecs%60).padStart(2,'0');
+      const el = document.getElementById('et');
+      if (el) { el.textContent=m+':'+s; if(examSecs<=300) el.style.color='var(--red)'; }
+      if (examSecs<=0) clearInterval(examTimer);
+    },1000);
+  }
+  const m=String(Math.floor(examSecs/60)).padStart(2,'0'), s=String(examSecs%60).padStart(2,'0');
+  const done=allQ.filter(q=>answered[q.id]!==undefined).length;
+  const correct=allQ.filter(q=>isCorrect(q)).length;
+
+  let html=`<div class="etimer">
+    <span style="font-size:1.3rem">📝</span>
+    <div><strong>Full Practice Exam</strong><br>
+    <span style="font-size:.78rem;color:var(--text2)">${allQ.length} questions from 2023 & 2024 exams</span></div>
+    <span id="et" style="margin-left:auto;font-size:1.3rem;font-weight:800;font-family:monospace;color:var(--cyan)">${m}:${s}</span>
+    <button class="btn btn-o" style="margin-left:8px" onclick="resetExam()">↺ Reset</button>
+  </div>
+  <div class="scorebar" style="margin-bottom:14px">
+    <div class="sc"><div class="sv">${correct}/${allQ.length}</div><div class="sl">Correct</div></div>
+    <div class="sc"><div class="sv">${done}/${allQ.length}</div><div class="sl">Answered</div></div>
+    <div class="sc"><div class="sv" style="color:${allQ.length&&correct/allQ.length>=.7?'var(--green)':'var(--red)'}">${allQ.length?Math.round(100*correct/allQ.length):0}%</div><div class="sl">Score</div></div>
+    <div class="sc"><div class="sv" style="color:var(--yellow)">${allQ.length?Math.round(1+correct*9/allQ.length*0.9):1}.0</div><div class="sl">Est. Grade</div></div>
+  </div>`;
+
+  // Group by topic
+  ['t1','t2','t3','t4','t5','t6','t7'].forEach(tid=>{
+    const qs=QB[tid]||[];
+    if(!qs.length) return;
+    const t=TOPICS.find(x=>x.id===tid);
+    html+=`<div style="margin-bottom:6px;padding:8px 12px;background:var(--bg3);border-radius:8px;font-size:.8rem;font-weight:700;color:var(--cyan)">
+      ${t.icon} Topic ${t.num}: ${t.label}
+    </div>`;
+    qs.forEach((q,qi)=>{
+      const ua=answered[q.id], isAnswered=ua!==undefined;
+      const typeLabel=q.type==='calc'?'<span class="qtype calc">CALC</span>':q.type==='diag'?'<span class="qtype diag">DIAGRAM</span>':q.type==='open'?'<span class="qtype open">OPEN</span>':'';
+      html+=`<div class="qbox" id="qb_${q.id}">
+        <div class="qhead">
+          <span class="qnum">Q${qi+1}</span>
+          <span class="qsrc">${q.src}·Q${q.n}</span>${typeLabel}
+          <span style="flex:1;margin-left:8px" class="qtxt">${q.text.replace(/\n/g,'<br>')}</span>
+        </div>
+        <div class="qbody">
+          ${q.svg?`<div class="qdiag">${SVG[q.svg]||''}</div>`:''}
+          ${q.type==='open'
+            ? (isAnswered ? openResultHTML(q) : openInputHTML(q,tid)+hintHTML(q.id))
+            : `<div class="opts">${q.opts.map((opt,oi)=>{
+                let cls='opt';
+                if(isAnswered){ cls+=' dis'; if(oi===q.ans) cls+=' ok'; else if(oi===ua) cls+=' bad'; }
+                return `<div class="${cls}" onclick="answer('${q.id}',${oi},${q.ans},'${tid}')">
+                  <span class="ol">${String.fromCharCode(65+oi)})</span><span>${opt}</span>
+                </div>`;
+              }).join('')}</div>
+              ${!isAnswered ? hintHTML(q.id) : ''}
+              <div class="exp${isAnswered?' show':''}" id="exp_${q.id}">${q.explanation||''}</div>
+              ${isAnswered&&q.steps?`<div class="steps">${q.steps.map(s=>`<div class="step"><div class="sn">${s.n}</div><code class="sf">${s.f}</code></div>`).join('')}</div>`:''}`
+          }
+        </div>
+      </div>`;
+    });
+  });
+
+  el.innerHTML=html;
+}
+
+function resetExam() {
+  Object.values(QB).flat().forEach(q=>delete answered[q.id]);
+  clearInterval(examTimer); examTimer=null; examSecs=90*60;
+  updateProgress(); renderContent();
+}
+
+// ─────────────────────────────────────────────
+// FORMULA PANEL ENGINE
+// ─────────────────────────────────────────────
+function renderFormulaPanel() {
+  const body = document.getElementById('fml-panel-body');
+  if (!body) return;
+  let html = '';
+  FORMULA_SHEET.forEach(sec => {
+    html += `<div class="fml-sec">
+      <div class="fml-sec-title">${sec.section}</div>
+      ${sec.formulas.map(f => `<div class="fml-row" id="fs_${f.id}">
+        <div class="fml-katex" id="fsk_${f.id}"></div>
+        <div class="fml-lbl">${f.label}</div>
+      </div>`).join('')}
+    </div>`;
+  });
+  body.innerHTML = html;
+  // Render KaTeX for each formula row
+  function renderAll() {
+    if (typeof katex === 'undefined') { setTimeout(renderAll, 400); return; }
+    FORMULA_SHEET.forEach(sec => sec.formulas.forEach(f => {
+      const el = document.getElementById('fsk_'+f.id);
+      if (el) try { katex.render(f.latex, el, {displayMode:false, throwOnError:false}); }
+              catch(e) { el.textContent = f.latex; }
+    }));
+  }
+  renderAll();
+}
+
+function openFormulaPanel(ids) {
+  const panel = document.getElementById('fml-panel');
+  const fab = document.getElementById('fab-fml');
+  panel.classList.add('open');
+  if (fab) fab.classList.add('active');
+  // Clear old highlights
+  document.querySelectorAll('.fml-row.hl').forEach(el => el.classList.remove('hl'));
+  if (ids && ids.length) {
+    ids.forEach(id => {
+      const row = document.getElementById('fs_'+id);
+      if (row) row.classList.add('hl');
+    });
+    // Scroll to first highlighted
+    const first = document.getElementById('fs_'+ids[0]);
+    if (first) setTimeout(() => first.scrollIntoView({behavior:'smooth', block:'center'}), 150);
+  }
+}
+
+function closeFormulaPanel() {
+  const panel = document.getElementById('fml-panel');
+  const fab = document.getElementById('fab-fml');
+  panel.classList.remove('open');
+  if (fab) fab.classList.remove('active');
+}
+
+function toggleFormulaPanel() {
+  const panel = document.getElementById('fml-panel');
+  if (panel.classList.contains('open')) closeFormulaPanel();
+  else openFormulaPanel([]);
+}
+
+function showHint(qid) {
+  const hint = HINTS[qid];
+  if (!hint) return;
+  const box = document.getElementById('hint_'+qid);
+  if (box) {
+    box.classList.toggle('show');
+    if (box.classList.contains('show') && hint.ids && hint.ids.length) {
+      openFormulaPanel(hint.ids);
+    }
+  }
+}
+
+// Helper: build hint HTML for a question
+function hintHTML(qid) {
+  const h = HINTS[qid];
+  if (!h) return '';
+  return `<button class="hint-btn" onclick="showHint('${qid}')">💡 Hint</button>
+  <div class="hint-box" id="hint_${qid}">💡 ${h.text}</div>`;
+}
+
+// ─────────────────────────────────────────────
+// BOOT
+// ─────────────────────────────────────────────
+buildSidebar();
+renderTopbar();
+renderContent();
+renderFormulaPanel();
+setInterval(updateProgress, 3000);
+</script>
+</body>
+</html>
